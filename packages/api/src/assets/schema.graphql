@@ -1,0 +1,17 @@
+type User {
+	id: ID!
+	email: String!
+	familyName: String!
+	givenName: String!
+	phoneNumber: String
+	birthDate: String
+	picture: String
+}
+
+type Query {
+	me: User
+}
+
+schema {
+	query: Query
+}

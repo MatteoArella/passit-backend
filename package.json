@@ -1,0 +1,44 @@
+{
+  "name": "@passit/backend",
+  "version": "1.0.0",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Arella Matteo"
+    },
+    {
+      "name": "De Luca Giovanni"
+    }
+  ],
+  "private": true,
+  "workspaces": [
+    "packages/**",
+    "app/**",
+    "test/**"
+  ],
+  "scripts": {
+    "clean": "lerna run clean",
+    "build": "./scripts/build.sh",
+    "test": "lerna run test --ignore=@passit/test-e2e",
+    "test:e2e": "lerna run test --scope=@passit/test-e2e",
+    "deploy": "./scripts/deploy.sh",
+    "destroy": "./scripts/destroy.sh",
+    "cdk:synth": "cdk synth",
+    "cdk:diff": "cdk diff --no-color 2>&1 | tee cdk.log"
+  },
+  "devDependencies": {
+    "@testdeck/mocha": "^0.1.2",
+    "@types/chai": "^4.2.14",
+    "@types/mocha": "^8.2.0",
+    "@types/node": "^14.14.20",
+    "cdk": "^1.78.0",
+    "chai": "^4.2.0",
+    "eslint": "~7.14.0",
+    "eslint-config-airbnb-base": "~14.2.1",
+    "lerna": "^3.22.1",
+    "mocha": "^8.2.1",
+    "ts-node": "^9.1.1",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^4.1.3"
+  }
+}

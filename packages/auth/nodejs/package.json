@@ -1,0 +1,11 @@
+{
+  "name": "@passit/auth-service-functions",
+  "version": "1.0.0",
+  "license": "MIT",
+  "dependencies": {
+    "@dicebear/avatars": "^4.5.2",
+    "@dicebear/avatars-jdenticon-sprites": "^4.5.2",
+    "sharp": "^0.27.0",
+    "uuid": "^8.3.2"
+  }
+}

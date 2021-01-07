@@ -1,0 +1,17 @@
+*.js
+!.eslintrc.js
+!jest.config.js
+*.d.ts
+*.tsbuildinfo
+node_modules
+**/dist
+.env
+*.log
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+cdk-exports.json
+
+# Parcel default cache directory
+.parcel-cache

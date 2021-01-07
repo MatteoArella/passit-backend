@@ -1,0 +1,99 @@
+name: Build
+on:
+  pull_request:
+  push:
+    branches:
+      - '!master'
+
+env:
+  GOOGLE_ANDROID_CLIENT_ID: ${{ secrets.GOOGLE_ANDROID_CLIENT_ID }}
+  GOOGLE_WEB_CLIENT_ID: ${{ secrets.GOOGLE_WEB_CLIENT_ID }}
+  GOOGLE_WEB_CLIENT_SECRET: ${{ secrets.GOOGLE_WEB_CLIENT_SECRET }}
+  NODE_VERSION: 12.x
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: cache dependencies
+        uses: actions/cache@v2
+        id: cache-node
+        with:
+          path: |
+            node_modules
+            **/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install dependencies
+        if: steps.cache-node.outputs.cache-hit != 'true'
+        run: scripts/install.sh
+
+      - name: Build
+        run: yarn run build
+
+      - name: CDK bootstrap
+        run: yarn run cdk bootstrap
+
+      - name: CDK Synth
+        run: yarn run cdk:synth
+
+      - name: CDK diff
+        run: yarn run cdk:diff
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifact
+          path: |
+            app/*/dist
+            packages/*/dist
+            test/*/dist
+            cdk.out
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: cache dependencies
+        uses: actions/cache@v2
+        id: cache-node
+        with:
+          path: |
+            node_modules
+            **/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install dependencies
+        if: steps.cache-node.outputs.cache-hit != 'true'
+        run: scripts/install.sh
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: build-artifact
+
+      - name: Test
+        run: yarn run test
+
+  complete:
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: geekyeggo/delete-artifact@v1
+        with:
+          name: build-artifact

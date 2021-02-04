@@ -23,6 +23,7 @@
     "test:e2e": "lerna run test --scope=@passit/test-e2e",
     "deploy": "./scripts/deploy.sh",
     "destroy": "./scripts/destroy.sh",
+    "cdk:bootstrap": "cdk bootstrap",
     "cdk:synth": "cdk synth",
     "cdk:diff": "cdk diff --no-color 2>&1 | tee cdk.log"
   },

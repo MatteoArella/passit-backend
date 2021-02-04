@@ -38,7 +38,7 @@ jobs:
         run: yarn run build
 
       - name: CDK bootstrap
-        run: yarn run cdk bootstrap
+        run: yarn run cdk:bootstrap
 
       - name: CDK Synth
         run: yarn run cdk:synth

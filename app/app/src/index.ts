@@ -65,10 +65,6 @@ class AppStack extends cdk.Stack {
       value: apiStack.api.graphqlUrl
     });
 
-    new cdk.CfnOutput(this, 'APIKey', {
-      value: apiStack.api.apiKey || ''
-    });
-
     new cdk.CfnOutput(this, 'StorageBucketName', {
       value: storageStack.bucket.bucketName
     });

@@ -1,5 +1,6 @@
 {
-  "app": "yarn exec ts-node -r tsconfig-paths/register app/app/src/index.ts",
+  "app": "npx ts-node -r tsconfig-paths/register app/app/src/index.ts",
+  "requireApproval": "never",
   "context": {
     "@aws-cdk/core:enableStackNameDuplicates": "true",
     "aws-cdk:enableDiffNoFail": "true",

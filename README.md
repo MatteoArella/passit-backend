@@ -1,8 +1,8 @@
 ![Release](https://github.com/MatteoArella/passit-backend/workflows/Release/badge.svg?branch=master)
 
-# PassIt backend
+# PassIt! backend
 
-`PassIt` is a platform for helping *tutors* to post ads and for *students* to search a tutor.
+`PassIt!` is a platform for helping *tutors* to post ads and for *students* to search a tutor.
 
 ## Configuration
 In order to build and deploy the backend on your AWS account you have to:
@@ -26,9 +26,8 @@ yarn run lerna bootstrap
 Build the project with:
 
 ```bash
-yarn run lerna run build
+yarn run build
 ```
-(if you have `lerna` installed globally on your system you can simply avoid `yarn run` for running `lerna`).
 
 ## Test
 
@@ -39,6 +38,7 @@ yarn run test
 ## Deploy
 
 ```bash
+yarn run cdk:bootstrap
 yarn run cdk:synth
 yarn run deploy
 ```

@@ -80,6 +80,8 @@ jobs:
   staging:
     needs: test
     runs-on: ubuntu-latest
+    env:
+      USER_POOL_DOMAIN_PREFIX: passit-staging
 
     steps:
       - uses: actions/checkout@v2
@@ -114,7 +116,7 @@ jobs:
           aws-region: eu-central-1
 
       - name: CDK bootstrap
-        run: yarn run cdk bootstrap
+        run: yarn run cdk:bootstrap
 
       - name: CDK Synth
         run: yarn run cdk:synth
@@ -124,9 +126,6 @@ jobs:
       
       - name: E2E tests
         run: yarn run test:e2e
-      
-      - name: CDK destroy
-        run: yarn run destroy
 
   deploy:
     needs: staging
@@ -165,7 +164,7 @@ jobs:
           aws-region: eu-central-1
 
       - name: CDK bootstrap
-        run: yarn run cdk bootstrap
+        run: yarn run cdk:bootstrap
 
       - name: CDK Synth
         run: yarn run cdk:synth

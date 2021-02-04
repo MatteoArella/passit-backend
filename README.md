@@ -4,6 +4,9 @@
 
 `PassIt!` is a platform for helping *tutors* to post ads and for *students* to search a tutor.
 
+## Infrastructure architecture
+![PassIt Architecture](./diagrams/infrastructure.svg)
+
 ## Configuration
 In order to build and deploy the backend on your AWS account you have to:
 

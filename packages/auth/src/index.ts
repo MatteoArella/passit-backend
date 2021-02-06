@@ -21,7 +21,7 @@ export class AuthStack extends cdk.NestedStack {
   public readonly clientSecret: string;
   public readonly authenticatedRole: iam.Role;
 
-  private domainPrefix = process.env.USER_POOL_DOMAIN_PREFIX || 'passit';
+  public readonly domainPrefix = process.env.USER_POOL_DOMAIN_PREFIX || 'passit';
   public readonly userPoolDomain = `${this.domainPrefix}.auth.${this.region}.amazoncognito.com`;
   public readonly callbackUrl = `${this.domainPrefix}://callback/`;
   public readonly logoutUrl = `${this.domainPrefix}://signout/`;

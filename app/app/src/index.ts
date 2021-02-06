@@ -49,6 +49,10 @@ class AppStack extends cdk.Stack {
       value: authStack.userPoolDomain
     });
 
+    new cdk.CfnOutput(this, 'RedirectPrefix', {
+      value: authStack.domainPrefix
+    });
+
     new cdk.CfnOutput(this, 'UserPoolCallbackUrl', {
       value: authStack.callbackUrl
     });

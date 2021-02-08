@@ -6,6 +6,7 @@ import * as s3 from '@aws-cdk/aws-s3';
 import * as iam from '@aws-cdk/aws-iam';
 import { join } from 'path';
 import * as dotenv from 'dotenv';
+import env from 'env-var';
 import * as core from '@passit/core';
 
 dotenv.config();
@@ -21,14 +22,20 @@ export class AuthStack extends cdk.NestedStack {
   public readonly clientSecret: string;
   public readonly authenticatedRole: iam.Role;
 
-  public readonly domainPrefix = process.env.USER_POOL_DOMAIN_PREFIX || 'passit';
-  public readonly userPoolDomain = `${this.domainPrefix}.auth.${this.region}.amazoncognito.com`;
-  public readonly callbackUrl = `${this.domainPrefix}://callback/`;
-  public readonly logoutUrl = `${this.domainPrefix}://signout/`;
-  public readonly googleClientId = (process.env.GOOGLE_WEB_CLIENT_ID as string);
+  public readonly domainPrefix: string;
+  public readonly userPoolDomain: string;
+  public readonly callbackUrl: string;
+  public readonly logoutUrl: string;
+  public readonly googleClientId: string;
 
   constructor(scope: cdk.Construct, id: string, props: AuthStackProps) {
     super(scope, id, props);
+
+    this.domainPrefix = env.get('USER_POOL_DOMAIN_PREFIX').required().asString();
+    this.userPoolDomain = `${this.domainPrefix}.auth.${this.region}.amazoncognito.com`;
+    this.callbackUrl = `${this.domainPrefix}://callback/`;
+    this.logoutUrl = `${this.domainPrefix}://signout/`;
+    this.googleClientId = env.get('GOOGLE_WEB_CLIENT_ID').required().asString();
 
     const preAuthenticationTrigger = new core.Function(this, 'PreAuthenticationLambda', {
       functionName: 'pre-authentication-function',
@@ -118,7 +125,7 @@ export class AuthStack extends cdk.NestedStack {
 
     const googleIdentityProvider = new cognito.UserPoolIdentityProviderGoogle(this, 'GoogleIdentityProvider', {
       clientId: this.googleClientId,
-      clientSecret: (process.env.GOOGLE_WEB_CLIENT_SECRET as string),
+      clientSecret: env.get('GOOGLE_WEB_CLIENT_SECRET').required().asString(),
       userPool: this.userPool,
       attributeMapping: {
         email: cognito.ProviderAttribute.GOOGLE_EMAIL,
@@ -178,7 +185,7 @@ export class AuthStack extends cdk.NestedStack {
         }
       ],
       supportedLoginProviders: {
-        'accounts.google.com': (process.env.GOOGLE_ANDROID_CLIENT_ID as string)
+        'accounts.google.com': env.get('GOOGLE_ANDROID_CLIENT_ID').required().asString()
       }
     });
 

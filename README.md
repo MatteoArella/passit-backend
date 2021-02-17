@@ -10,7 +10,7 @@
 ## Configuration
 In order to build and deploy the backend on your AWS account you have to:
 
-1. Configure on your machine your aws credentials
+1. Configure on your machine your aws credentials (you can check out on the [Getting Started with CDK page](https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html#getting_started_prerequisites) how to do it).
 2. Setup on [Google developer console](https://console.developers.google.com) an android client and a web client following the instructions at [amplify social sign in section](https://docs.amplify.aws/lib/auth/social_signin_web_ui/q/platform/android#amazon-cognito-user-pool-setup)
 3. Set the following environment variables (or put them inside an `.env` file on this project root folder):
 

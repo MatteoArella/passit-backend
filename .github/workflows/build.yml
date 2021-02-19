@@ -52,8 +52,11 @@ jobs:
           name: build-artifact
           path: |
             app/*/dist
+            app/*/*.zip
             packages/*/dist
+            packages/*/*.zip
             test/*/dist
+            test/*/*.zip
             cdk.out
 
   test:

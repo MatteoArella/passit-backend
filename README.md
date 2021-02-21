@@ -70,3 +70,11 @@ Unable to resolve AWS account to use. It must be either configured when you defi
 ```
 
 error when running `yarn run cdk bootstrap`, try to remove the `[profile default]` or `[default]` line from the beginning of your `~/.aws/config` file and run it again.
+
+## Services
+Back-end services are the following:
+
+Service | Description
+-------------------- | ------------------------------------------
+[Users](./packages/users/README.md) | Provides User search.
+[Insertions](./packages/insertions/README.md) | Provides CRUD operations on Insertions.

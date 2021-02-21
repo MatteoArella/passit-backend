@@ -15,7 +15,7 @@
     "@aws-cdk/aws-apigateway": "1.90.0",
     "@aws-cdk/aws-cognito": "1.90.0",
     "@aws-cdk/core": "1.90.0",
-    "@passit/core": "^1.0.0",
+    "@passit/core-infra": "^1.0.0",
     "aws-lambda": "^1.0.6",
     "dotenv": "^8.2.0"
   },
@@ -26,8 +26,6 @@
     "tsoa": "^3.4.0"
   },
   "peerDependencies": {
-    "@aws-cdk/aws-iam": "1.90.0",
-    "@aws-cdk/aws-lambda": "1.90.0",
     "@testdeck/mocha": "^0.1.2",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.2.0",

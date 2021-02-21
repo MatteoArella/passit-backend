@@ -4,19 +4,19 @@
   "license": "MIT",
   "main": "src/index.ts",
   "scripts": {
-    "clean": "rimraf -rf dist tsconfig.tsbuildinfo libs.zip",
-    "build": "yarn run clean && cd nodejs && npm install --prod && cd .. && zip -rq libs.zip nodejs && yarn run compile",
+    "clean": "rimraf -rf dist tsconfig.tsbuildinfo",
+    "build": "yarn run clean && yarn run compile",
     "compile": "tsc -p tsconfig.json",
     "prepublishOnly": "yarn run build",
     "test": "mocha -c test/index.ts -r ts-node/register test/**/*.spec.ts --recursive",
     "start": "ts-node -r tsconfig-paths/register src/index.ts"
   },
   "dependencies": {
-    "@aws-cdk/aws-cognito": "^1.78.0",
-    "@aws-cdk/aws-s3": "^1.78.0",
-    "@aws-cdk/aws-s3-notifications": "^1.78.0",
-    "@aws-cdk/core": "^1.78.0",
-    "@aws-cdk/custom-resources": "^1.78.0",
+    "@aws-cdk/aws-cognito": "1.90.0",
+    "@aws-cdk/aws-s3": "1.90.0",
+    "@aws-cdk/aws-s3-notifications": "1.90.0",
+    "@aws-cdk/core": "1.90.0",
+    "@aws-cdk/custom-resources": "1.90.0",
     "@dicebear/avatars": "^4.5.2",
     "@dicebear/avatars-jdenticon-sprites": "^4.5.2",
     "@passit/core": "^1.0.0",
@@ -36,8 +36,8 @@
     "rimraf": "~3.0.2"
   },
   "peerDependencies": {
-    "@aws-cdk/aws-iam": "^1.78.0",
-    "@aws-cdk/aws-lambda": "^1.78.0",
+    "@aws-cdk/aws-iam": "1.90.0",
+    "@aws-cdk/aws-lambda": "1.90.0",
     "@testdeck/mocha": "^0.1.2",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.2.0",

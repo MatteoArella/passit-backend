@@ -13,8 +13,8 @@
     "start": "ts-node -r tsconfig-paths/register src/index.ts"
   },
   "dependencies": {
-    "@aws-cdk/aws-s3": "^1.78.0",
-    "@aws-cdk/aws-iam": "^1.78.0",
+    "@aws-cdk/aws-s3": "1.90.0",
+    "@aws-cdk/aws-iam": "1.90.0",
     "dotenv": "^8.2.0"
   },
   "devDependencies": {

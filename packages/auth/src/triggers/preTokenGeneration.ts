@@ -24,8 +24,8 @@ export const handler = async (event: PreTokenGenerationTriggerEvent, _: Context)
     const content = await sharp(Buffer.from(avatar)).jpeg({ progressive: true }).toBuffer();
     // upload file to S3 bucket
     const data = await s3.upload({
-      Bucket: (process.env.BUCKET_NAME as string),
-      Key: join((process.env.IMAGES_FOLDER as string), `picture-${uuidv4()}.jpeg`),
+      Bucket: process.env.BUCKET_NAME!,
+      Key: join(process.env.IMAGES_FOLDER!, `picture-${uuidv4()}.jpeg`),
       Body: content
     }).promise();
 

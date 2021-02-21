@@ -1,7 +1,6 @@
 import * as cdk from '@aws-cdk/core';
 import * as cr from '@aws-cdk/custom-resources';
 import * as cognito from '@aws-cdk/aws-cognito';
-import * as lambda from '@aws-cdk/aws-lambda';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as iam from '@aws-cdk/aws-iam';
 import { join } from 'path';
@@ -39,22 +38,25 @@ export class AuthStack extends cdk.NestedStack {
 
     const preAuthenticationTrigger = new core.Function(this, 'PreAuthenticationLambda', {
       functionName: 'pre-authentication-function',
-      code: lambda.Code.fromAsset(join(__dirname, '../dist/triggers')),
-      handler: 'preAuthentication.handler'
+      entry: join(__dirname, 'triggers/preAuthentication.ts'),
+      handler: 'handler'
     });
 
-    const layer: lambda.LayerVersion = new core.FunctionLayer(this, 'PreTokenGenerationLambdaLayer', {
-      code: lambda.Code.fromAsset(join(__dirname, '../libs.zip'))
-    });
-
-    const preTokenGenerationTrigger: lambda.Function = new core.Function(this, 'PreTokenGenerationLambda', {
+    const preTokenGenerationTrigger = new core.Function(this, 'PreTokenGenerationLambda', {
       functionName: 'pre-token-generation-function',
-      code: lambda.Code.fromAsset(join(__dirname, '../dist/triggers')),
-      handler: 'preTokenGeneration.handler',
-      layers: [ layer ],
+      entry: join(__dirname, 'triggers/preTokenGeneration.ts'),
+      handler: 'handler',
       environment: {
         BUCKET_NAME: props.storageBucket.bucketName,
         IMAGES_FOLDER: 'public/images'
+      },
+      bundling: {
+        nodeModules: [
+          '@dicebear/avatars',
+          '@dicebear/avatars-jdenticon-sprites',
+          'sharp',
+          'uuid'
+        ]
       }
     });
 

@@ -1,7 +1,6 @@
 import * as cdk from '@aws-cdk/core';
 import * as apigateway from '@aws-cdk/aws-apigateway';
 import * as cognito from '@aws-cdk/aws-cognito';
-import * as lambda from '@aws-cdk/aws-lambda';
 import * as iam from '@aws-cdk/aws-iam';
 import { join } from 'path';
 import * as dotenv from 'dotenv';
@@ -35,8 +34,8 @@ export class UsersStack extends cdk.NestedStack {
 
     const getUserByIdLambda = new core.Function(this, 'GetUserByIdLambda', {
       functionName: 'get-user-by-id-function',
-      code: lambda.Code.fromAsset(join(__dirname, '../dist/functions')),
-      handler: 'getUserById.handler',
+      entry: join(__dirname, 'functions/getUserById.ts'),
+      handler: 'handler',
       environment: {
         'USER_POOL_ID': props.userPool.userPoolId
       }

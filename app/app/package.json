@@ -12,7 +12,7 @@
     "start": "ts-node -r tsconfig-paths/register src/index.ts"
   },
   "dependencies": {
-    "@aws-cdk/core": "^1.78.0",
+    "@aws-cdk/core": "1.90.0",
     "@passit/api-service": "^1.0.0",
     "@passit/auth-service": "^1.0.0",
     "@passit/storage-service": "^1.0.0",

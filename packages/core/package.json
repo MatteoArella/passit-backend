@@ -13,9 +13,10 @@
     "start": "ts-node -r tsconfig-paths/register src/index.ts"
   },
   "dependencies": {
-    "@aws-cdk/aws-lambda": "^1.78.0",
-    "@aws-cdk/aws-appsync": "^1.78.0",
-    "@aws-cdk/core": "^1.78.0",
+    "@aws-cdk/aws-lambda": "1.90.0",
+    "@aws-cdk/aws-lambda-nodejs": "1.90.0",
+    "@aws-cdk/aws-appsync": "1.90.0",
+    "@aws-cdk/core": "1.90.0",
     "mustache": "^4.1.0"
   },
   "devDependencies": {
@@ -25,8 +26,8 @@
     "rimraf": "~3.0.2"
   },
   "peerDependencies": {
-    "@aws-cdk/aws-lambda": "^1.78.0",
-    "@aws-cdk/aws-appsync": "^1.78.0",
+    "@aws-cdk/aws-lambda": "1.90.0",
+    "@aws-cdk/aws-appsync": "1.90.0",
     "@testdeck/mocha": "^0.1.2",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.2.0",

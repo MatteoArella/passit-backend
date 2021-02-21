@@ -1,32 +1,33 @@
 {
-  "name": "@passit/api-service",
+  "name": "@passit/core-infra",
   "version": "1.0.0",
   "license": "MIT",
   "main": "src/index.ts",
   "scripts": {
     "clean": "rimraf -rf dist tsconfig.tsbuildinfo",
     "build": "yarn run clean && yarn run compile",
-    "compile": "recursive-copy src/assets dist/assets && tsc -p tsconfig.json",
+    "compile": "tsc -p tsconfig.json",
+    "pack": "yarn run build && yarn pack",
     "prepublishOnly": "yarn run build",
     "test": "mocha -c test/index.ts -r ts-node/register test/**/*.spec.ts --recursive",
     "start": "ts-node -r tsconfig-paths/register src/index.ts"
   },
   "dependencies": {
+    "@aws-cdk/aws-lambda": "1.90.0",
+    "@aws-cdk/aws-lambda-nodejs": "1.90.0",
     "@aws-cdk/aws-appsync": "1.90.0",
-    "@aws-cdk/aws-apigateway": "1.90.0",
-    "@aws-cdk/aws-cognito": "1.90.0",
     "@aws-cdk/core": "1.90.0",
-    "@passit/auth-service": "^1.0.0",
-    "@passit/core-infra": "^1.0.0",
-    "aws-lambda": "^1.0.6",
-    "dotenv": "^8.2.0"
+    "mustache": "^4.1.0"
   },
   "devDependencies": {
-    "@types/dotenv": "^8.2.0",
+    "@types/aws-lambda": "^8.10.66",
+    "@types/mustache": "^4.1.0",
     "recursive-copy-cli": "^1.0.14",
     "rimraf": "~3.0.2"
   },
   "peerDependencies": {
+    "@aws-cdk/aws-lambda": "1.90.0",
+    "@aws-cdk/aws-appsync": "1.90.0",
     "@testdeck/mocha": "^0.1.2",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.2.0",

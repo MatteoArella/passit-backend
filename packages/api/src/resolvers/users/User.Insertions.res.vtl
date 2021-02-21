@@ -1,0 +1,17 @@
+#if($ctx.error)
+  $util.error($ctx.error.message, $ctx.error.type)
+#end
+#if($ctx.result.statusCode == 200)
+  #set($body = $util.parseJson($ctx.result.body))
+  #set($result = {})
+  #set($result.items = $body.get("items"))
+  #set($result.pageInfo = {})
+  #set($result.pageInfo.hasNextPage = false)
+  #if($body.get("after"))
+    #set($result.pageInfo.hasNextPage = true)
+  #end
+  #set($result.pageInfo.endCursor = $util.defaultIfNull($body.get("after"), null))
+  $util.toJson($result)
+#else
+  $utils.appendError($ctx.result.body, "$ctx.result.statusCode")
+#end

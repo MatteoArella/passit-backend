@@ -1,17 +1,149 @@
-type User {
-	id: ID!
-	email: String!
-	familyName: String!
-	givenName: String!
-	phoneNumber: String
-	birthDate: String
-	picture: String
+interface Entity {
+  id: ID!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+}
+
+enum Sort {
+  asc
+  desc
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+}
+
+type InsertionConnection {
+  items: [Insertion]
+  pageInfo: PageInfo!
+}
+
+type User implements Entity {
+  id: ID!
+  email: String!
+  familyName: String!
+  givenName: String!
+  phoneNumber: String
+  birthDate: String
+  picture: String
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  insertions(filter: InsertionFilterInput, order: InsertionOrderInput, first: Int, after: String): InsertionConnection!
+}
+
+type Insertion implements Entity {
+  id: ID!
+  title: String!
+  description: String!
+  subject: String!
+  tutor: User!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+}
+
+input InsertionInput {
+  title: String!
+  description: String!
+  subject: String!
+}
+
+input InsertionOrderInput {
+  id: Sort
+  title: Sort
+  description: Sort
+  subject: Sort
+  tutor: Sort
+  createdAt: Sort
+  updatedAt: Sort
+}
+
+input StringFilterInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+}
+
+input IDFilterInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+}
+
+input BooleanFilterInput {
+  ne: Boolean
+  eq: Boolean
+}
+
+input IntFilterInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  contains: Int
+  notContains: Int
+  between: [Int]
+}
+
+input FloatFilterInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  contains: Float
+  notContains: Float
+  between: [Float]
+}
+
+input UserFilterInput {
+  id: IDFilterInput
+  email: StringFilterInput
+  familyName: StringFilterInput
+  givenName: StringFilterInput
+  phoneNumber: StringFilterInput
+  birthDate: StringFilterInput
+  picture: StringFilterInput
+  createdAt: StringFilterInput
+  updatedAt: StringFilterInput
+}
+
+input InsertionFilterInput {
+  id: IDFilterInput
+  title: StringFilterInput
+  description: StringFilterInput
+  subject: StringFilterInput
+  tutor: UserFilterInput
+  createdAt: StringFilterInput
+  updatedAt: StringFilterInput
 }
 
 type Query {
-	me: User
+  me: User
+}
+
+type Mutation {
+  createInsertion(insertion: InsertionInput!): Insertion
 }
 
 schema {
-	query: Query
+  query: Query
+  mutation: Mutation
 }

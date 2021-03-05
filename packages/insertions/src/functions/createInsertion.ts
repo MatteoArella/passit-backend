@@ -3,12 +3,14 @@ import { HttpResponse, HttpErrorResponse, DynamoDB } from '@passit/core-function
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
 import { Insertion } from './models/insertion';
+import { Location } from './models/location';
 
 type FunctionParams = {
   title: string;
   description: string;
   subject: string;
   tutorId: string;
+  location: Location
 };
 
 const ddb = new DynamoDB<Insertion>();

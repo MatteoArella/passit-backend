@@ -1,5 +1,6 @@
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
-import { APIGatewayProxyHandler, APIGatewayProxyResult, Context } from 'aws-lambda';
+import { APIGatewayProxyHandler } from 'aws-lambda';
+import { HttpResponse, HttpErrorResponse } from '@passit/core-functions';
 import { User } from './models/user';
 
 const cognitoIdentityServiceProvider = new CognitoIdentityServiceProvider({ apiVersion: '2016-04-18' });
@@ -8,7 +9,8 @@ type FunctionParams = {
   userId: string;
 };
 
-export const handler: APIGatewayProxyHandler = async (event, _: Context) => {
+export const handler: APIGatewayProxyHandler = async (event) => {
+  const res = new HttpResponse<User | HttpErrorResponse>();
   const userAttributesMapping: any = {
     'sub': 'id',
     'email': 'email',
@@ -20,12 +22,6 @@ export const handler: APIGatewayProxyHandler = async (event, _: Context) => {
   };
 
   const params = event.pathParameters as FunctionParams;
-  const res: APIGatewayProxyResult = {
-    statusCode: 404,
-    body: JSON.stringify({
-      message: 'user not found'
-    })
-  };
 
   const response = await cognitoIdentityServiceProvider.listUsers({
     UserPoolId: (process.env.USER_POOL_ID as string),
@@ -33,7 +29,7 @@ export const handler: APIGatewayProxyHandler = async (event, _: Context) => {
   }).promise();
 
   if (response.Users?.length === 0) {
-    return res;
+    return res.status(404).json({ message: 'user not found' });
   }
 
   const cognitoUser = response.Users?.pop();
@@ -47,8 +43,8 @@ export const handler: APIGatewayProxyHandler = async (event, _: Context) => {
   if (user) {
     user.createdAt = cognitoUser!.UserCreateDate?.toISOString()!;
     user.updatedAt = cognitoUser!.UserLastModifiedDate?.toISOString();
-    return { statusCode: 200, body: JSON.stringify(user) };
+    return res.status(200).json(user);
   } else {
-    return res;
+    return res.status(404).json({ message: 'user not found' });
   }
 };

@@ -206,6 +206,23 @@
     "@aws-cdk/region-info" "1.90.0"
     constructs "^3.2.0"
 
+"@aws-cdk/aws-elasticsearch@1.90.0":
+  version "1.90.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-elasticsearch/-/aws-elasticsearch-1.90.0.tgz#ede34771384b38079f03537ed7b000b1171467c3"
+  integrity sha512-SUmx+ZnnDXoaFZdc6SEnlBoangPY/OGDC3IuXWHBJKy5h2KzF/EcSrOUs4ai9GDFpDUlLkX6wDA2CT3H7IiAOQ==
+  dependencies:
+    "@aws-cdk/aws-certificatemanager" "1.90.0"
+    "@aws-cdk/aws-cloudwatch" "1.90.0"
+    "@aws-cdk/aws-ec2" "1.90.0"
+    "@aws-cdk/aws-iam" "1.90.0"
+    "@aws-cdk/aws-kms" "1.90.0"
+    "@aws-cdk/aws-logs" "1.90.0"
+    "@aws-cdk/aws-route53" "1.90.0"
+    "@aws-cdk/aws-secretsmanager" "1.90.0"
+    "@aws-cdk/core" "1.90.0"
+    "@aws-cdk/custom-resources" "1.90.0"
+    constructs "^3.2.0"
+
 "@aws-cdk/aws-events@1.90.0":
   version "1.90.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-events/-/aws-events-1.90.0.tgz#3cc6c516b3080810548fd4fbd10f913c91ba4211"
@@ -224,6 +241,17 @@
     "@aws-cdk/region-info" "1.90.0"
     constructs "^3.2.0"
 
+"@aws-cdk/aws-kinesis@1.90.0":
+  version "1.90.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-kinesis/-/aws-kinesis-1.90.0.tgz#3a0224a6b5ce20af26f2f77c4568382ed96eafb1"
+  integrity sha512-P/gj+A/Axn0w60v0YkJO8alkO+zatKSOYHNd7/hlhYz01GzuuB9DPehAVQbRNP6/8WxWjgshQ19CZm6k6feOBQ==
+  dependencies:
+    "@aws-cdk/aws-iam" "1.90.0"
+    "@aws-cdk/aws-kms" "1.90.0"
+    "@aws-cdk/aws-logs" "1.90.0"
+    "@aws-cdk/core" "1.90.0"
+    constructs "^3.2.0"
+
 "@aws-cdk/aws-kms@1.90.0":
   version "1.90.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-kms/-/aws-kms-1.90.0.tgz#9e558cb40835199d2e84f9f7d9602293dbf7cf97"
@@ -232,6 +260,25 @@
     "@aws-cdk/aws-iam" "1.90.0"
     "@aws-cdk/core" "1.90.0"
     "@aws-cdk/cx-api" "1.90.0"
+    constructs "^3.2.0"
+
+"@aws-cdk/aws-lambda-event-sources@1.90.0":
+  version "1.90.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-lambda-event-sources/-/aws-lambda-event-sources-1.90.0.tgz#b799eec28a1b1970aef0db26fd8506de126e2f1b"
+  integrity sha512-RuMVP2qUD0Swl3TqiC9ee1EJXP8CeVey3c6G/4aAnqN0e6DidJ8XnsyGPwnRV9v7t6EUPANylHYag7VZty4LqQ==
+  dependencies:
+    "@aws-cdk/aws-apigateway" "1.90.0"
+    "@aws-cdk/aws-dynamodb" "1.90.0"
+    "@aws-cdk/aws-events" "1.90.0"
+    "@aws-cdk/aws-iam" "1.90.0"
+    "@aws-cdk/aws-kinesis" "1.90.0"
+    "@aws-cdk/aws-lambda" "1.90.0"
+    "@aws-cdk/aws-s3" "1.90.0"
+    "@aws-cdk/aws-s3-notifications" "1.90.0"
+    "@aws-cdk/aws-sns" "1.90.0"
+    "@aws-cdk/aws-sns-subscriptions" "1.90.0"
+    "@aws-cdk/aws-sqs" "1.90.0"
+    "@aws-cdk/core" "1.90.0"
     constructs "^3.2.0"
 
 "@aws-cdk/aws-lambda-nodejs@1.90.0":
@@ -365,6 +412,18 @@
     "@aws-cdk/aws-sam" "1.90.0"
     "@aws-cdk/core" "1.90.0"
     "@aws-cdk/cx-api" "1.90.0"
+    constructs "^3.2.0"
+
+"@aws-cdk/aws-sns-subscriptions@1.90.0":
+  version "1.90.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-sns-subscriptions/-/aws-sns-subscriptions-1.90.0.tgz#005bcf783771207822311993c93c46690fc4bc83"
+  integrity sha512-PBoX90WX/aZ85aRI/i+d86NB57c32UjALAs3lflzx8wvQXJ6wN5xXoAf6pjrrunAwXHIyEOCQtD/CsPC9vYU8A==
+  dependencies:
+    "@aws-cdk/aws-iam" "1.90.0"
+    "@aws-cdk/aws-lambda" "1.90.0"
+    "@aws-cdk/aws-sns" "1.90.0"
+    "@aws-cdk/aws-sqs" "1.90.0"
+    "@aws-cdk/core" "1.90.0"
     constructs "^3.2.0"
 
 "@aws-cdk/aws-sns@1.90.0":
@@ -517,6 +576,17 @@
   dependencies:
     pure-color "^1.3.0"
     svgson "^4.0.0"
+
+"@elastic/elasticsearch@^7.11.0":
+  version "7.11.0"
+  resolved "https://registry.yarnpkg.com/@elastic/elasticsearch/-/elasticsearch-7.11.0.tgz#e196243d0ed026742fc160d72cc5b4b5b6c7807d"
+  integrity sha512-AFVVuANIdbV1qYjuOi4hnsX/DehWYG+bbhQO4amq9K4/NnzU7mpGWOPgVlRQTiX+vBfBkx7SL6h4QEjIlM3ztA==
+  dependencies:
+    debug "^4.1.1"
+    hpagent "^0.1.1"
+    ms "^2.1.1"
+    pump "^3.0.0"
+    secure-json-parse "^2.1.0"
 
 "@eslint/eslintrc@^0.2.1":
   version "0.2.2"
@@ -1908,6 +1978,13 @@ aws-cdk@1.90.0:
     wrap-ansi "^7.0.0"
     yargs "^16.2.0"
 
+aws-elasticsearch-connector@^9.0.3:
+  version "9.0.3"
+  resolved "https://registry.yarnpkg.com/aws-elasticsearch-connector/-/aws-elasticsearch-connector-9.0.3.tgz#106f8ea41c4ea79178a35c3f805589a7f23c98e4"
+  integrity sha512-jnzTHp3cIe1VxnQAO0t6sUIZ19WFe+LtXnX0FnHeoJUvOnrKSI5ooGGlZPCud2jmqVPK4L4c0w8XtiBjHyTk6g==
+  dependencies:
+    aws4 "^1.11.0"
+
 aws-lambda@^1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/aws-lambda/-/aws-lambda-1.0.6.tgz#ba562478264646b51e9dc817d7d25ea468ed011b"
@@ -1938,7 +2015,7 @@ aws-sign2@~0.7.0:
   resolved "https://registry.yarnpkg.com/aws-sign2/-/aws-sign2-0.7.0.tgz#b46e890934a9591f2d2f6f86d7e6a9f1b3fe76a8"
   integrity sha1-tG6JCTSpWR8tL2+G1+ap8bP+dqg=
 
-aws4@^1.8.0:
+aws4@^1.11.0, aws4@^1.8.0:
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.11.0.tgz#d61f46d83b2519250e2784daf5b09479a8b41c59"
   integrity sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==
@@ -3943,6 +4020,11 @@ hosted-git-info@^3.0.6:
   integrity sha512-aXpmwoOhRBrw6X3j0h5RloK4x1OzsxMPyxqIHyNfSe2pypkVTZFpEiRoSipPEPlMrh0HW/XsjkJ5WgnCirpNUw==
   dependencies:
     lru-cache "^6.0.0"
+
+hpagent@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/hpagent/-/hpagent-0.1.1.tgz#66f67f16e5c7a8b59a068e40c2658c2c749ad5e2"
+  integrity sha512-IxJWQiY0vmEjetHdoE9HZjD4Cx+mYTr25tR7JCxXaiI3QxW0YqYyM11KyZbHufoa/piWhMb2+D3FGpMgmA2cFQ==
 
 http-cache-semantics@^3.8.1:
   version "3.8.1"
@@ -6541,6 +6623,11 @@ sax@>=0.6.0:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
   integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
+
+secure-json-parse@^2.1.0:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/secure-json-parse/-/secure-json-parse-2.3.1.tgz#908aa5e806e223ff8d179d37ad95c2433f5f147d"
+  integrity sha512-5uGhQLHSC9tVa7RGPkSwxbZVsJCZvIODOadAimCXkU1aCa1fWdszj2DktcutK8A7dD58PoRdxTYiy0jFl6qjnw==
 
 "semver@2 || 3 || 4 || 5", "semver@2.x || 3.x || 4 || 5", semver@^5.4.1, semver@^5.5.0, semver@^5.5.1, semver@^5.6.0, semver@^5.7.0, semver@^5.7.1:
   version "5.7.1"

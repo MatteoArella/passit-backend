@@ -14,9 +14,10 @@
   "dependencies": {
     "@aws-cdk/aws-apigateway": "1.90.0",
     "@aws-cdk/aws-dynamodb": "1.90.0",
+    "@aws-cdk/aws-elasticsearch": "1.90.0",
     "@aws-cdk/core": "1.90.0",
-    "@passit/core-infra": "^1.0.0",
     "@passit/core-functions": "^1.0.0",
+    "@passit/core-infra": "^1.0.0",
     "aws-lambda": "^1.0.6",
     "dotenv": "^8.2.0",
     "moment": "^2.29.1",

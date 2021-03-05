@@ -1,6 +1,7 @@
 import * as cdk from '@aws-cdk/core';
 import * as apigateway from '@aws-cdk/aws-apigateway';
 import * as dynamodb from '@aws-cdk/aws-dynamodb';
+import * as es from '@aws-cdk/aws-elasticsearch';
 import * as iam from '@aws-cdk/aws-iam';
 import { join } from 'path';
 import * as dotenv from 'dotenv';
@@ -9,14 +10,14 @@ import * as core from '@passit/core-infra';
 dotenv.config();
 
 export interface InsertionsStackProps extends cdk.NestedStackProps {
-
+  esDomain: es.Domain;
 }
 
 export class InsertionsStack extends cdk.NestedStack {
   public readonly api: apigateway.RestApi;
   private stageName: string = 'v1';
 
-  constructor(scope: cdk.Construct, id: string, props?: InsertionsStackProps) {
+  constructor(scope: cdk.Construct, id: string, props: InsertionsStackProps) {
     super(scope, id, props);
 
     this.api = new apigateway.RestApi(this, 'InsertionsRestApi', {
@@ -35,12 +36,15 @@ export class InsertionsStack extends cdk.NestedStack {
       }
     });
 
+    const partitionKey: dynamodb.Attribute = {
+      name: 'id',
+      type: dynamodb.AttributeType.STRING
+    };
     const insertionsTable = new dynamodb.Table(this, 'InsertionsTable', {
-      partitionKey: {
-        name: 'id',
-        type: dynamodb.AttributeType.STRING
-      },
-      billingMode: dynamodb.BillingMode.PROVISIONED
+      tableName: 'insertions',
+      partitionKey: partitionKey,
+      billingMode: dynamodb.BillingMode.PROVISIONED,
+      stream: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES
     });
     insertionsTable.addGlobalSecondaryIndex({
       indexName: 'tutor-index',
@@ -50,15 +54,18 @@ export class InsertionsStack extends cdk.NestedStack {
       }
     });
 
+    new core.DynamoDBIndexElasticSearch(this, 'InsertionsIndex', {
+      domain: props.esDomain,
+      table: insertionsTable,
+      partitionKey: partitionKey
+    });
+
     const createInsertionLambda = new core.Function(this, 'CreateInsertionLambda', {
       functionName: 'create-insertion-function',
       entry: join(__dirname, 'functions/createInsertion.ts'),
       handler: 'handler',
       environment: {
         'INSERTIONS_TABLE_NAME': insertionsTable.tableName
-      },
-      bundling: {
-        nodeModules: undefined
       }
     });
 
@@ -68,9 +75,6 @@ export class InsertionsStack extends cdk.NestedStack {
       handler: 'handler',
       environment: {
         'INSERTIONS_TABLE_NAME': insertionsTable.tableName
-      },
-      bundling: {
-        nodeModules: undefined
       }
     });
 
@@ -80,9 +84,6 @@ export class InsertionsStack extends cdk.NestedStack {
       handler: 'handler',
       environment: {
         'INSERTIONS_TABLE_NAME': insertionsTable.tableName
-      },
-      bundling: {
-        nodeModules: undefined
       }
     });
 
@@ -93,6 +94,32 @@ export class InsertionsStack extends cdk.NestedStack {
     createInsertionLambda.grantInvoke(new iam.ServicePrincipal('apigateway.amazonaws.com'));
     getInsertionByIdLambda.grantInvoke(new iam.ServicePrincipal('apigateway.amazonaws.com'));
     getInsertionsLambda.grantInvoke(new iam.ServicePrincipal('apigateway.amazonaws.com'));
+
+    const locationSchema: apigateway.JsonSchema = {
+      schema: apigateway.JsonSchemaVersion.DRAFT4,
+      type: apigateway.JsonSchemaType.OBJECT,
+      properties: {
+        'country': {
+          type: apigateway.JsonSchemaType.STRING,
+          description: 'the country where the insertion is offered'
+        },
+        'state': {
+          type: apigateway.JsonSchemaType.STRING,
+          description: 'the state where the insertion is offered'
+        },
+        'city': {
+          type: apigateway.JsonSchemaType.STRING,
+          description: 'the city where the insertion is offered'
+        }
+      },
+      required: [ 'country', 'state', 'city' ]
+    };
+    const locationModel = this.api.addModel('Location', {
+      schema: locationSchema,
+      contentType: 'application/json',
+      description: 'Location model',
+      modelName: 'Location'
+    });
 
     const insertionSchema: apigateway.JsonSchema = {
       schema: apigateway.JsonSchemaVersion.DRAFT4,
@@ -114,6 +141,9 @@ export class InsertionsStack extends cdk.NestedStack {
           type: apigateway.JsonSchemaType.STRING,
           description: 'the description of the insertion'
         },
+        'location': {
+          ref: `https://apigateway.amazonaws.com/restapis/${this.api.restApiId}/models/${locationModel.modelId}`
+        },
         'tutorId': {
           type: apigateway.JsonSchemaType.STRING,
           description: 'the ID of the tutor who created the insertion'
@@ -127,7 +157,7 @@ export class InsertionsStack extends cdk.NestedStack {
           description: 'the last modification date of the insertion'
         }
       },
-      required: [ 'subject', 'title', 'description', 'tutorId' ]
+      required: [ 'subject', 'title', 'description', 'tutorId', 'location' ]
     };
     const insertionModel = this.api.addModel('Insertion', {
       schema: insertionSchema,
@@ -150,8 +180,7 @@ export class InsertionsStack extends cdk.NestedStack {
           type: apigateway.JsonSchemaType.STRING,
           description: 'the next token for pagination'
         }
-      },
-      required: [ 'items' ]
+      }
     }
     const insertionConnectionModel = this.api.addModel('InsertionConnection', {
       schema: insertionConnectionSchema,

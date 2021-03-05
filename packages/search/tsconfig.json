@@ -7,6 +7,6 @@
     "outDir": "./dist"
   },
   "include": [
-    "./src/", "../core-infra/lib/aws-elasticsearch-connector.d.ts"
+    "./src/"
   ]
 }

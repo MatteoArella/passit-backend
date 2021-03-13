@@ -1,13 +1,12 @@
-import { DynamoDB } from 'aws-sdk';
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { HttpResponse, HttpErrorResponse } from '@passit/core-functions';
+import { HttpResponse, HttpErrorResponse, DynamoDB } from '@passit/core-functions';
 import { Insertion } from './models/insertion';
 
 type FunctionParams = {
   insertionId: string;
 };
 
-const ddb = new DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
+const ddb = new DynamoDB<Insertion>();
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   const res = new HttpResponse<Insertion | HttpErrorResponse>();

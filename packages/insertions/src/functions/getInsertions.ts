@@ -9,7 +9,7 @@ type FunctionParams = {
   tutorId?: string;
 };
 
-const ddb = new core.DynamoDB<Insertion>({ apiVersion: '2012-08-10' });
+const ddb = new core.DynamoDB<Insertion>();
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   var startKey: aws.DynamoDB.DocumentClient.Key | undefined;

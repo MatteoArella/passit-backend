@@ -9,6 +9,10 @@ interface Query {
 }
 
 export class DynamoDB<T> extends Dynamo.DocumentClient {
+  constructor(options?: Dynamo.Types.ClientConfiguration | undefined) {
+    super({ apiVersion: '2012-08-10', ...options });
+  }
+
   async getData(params: QueryParamsInput) {
     var after = params.ExclusiveStartKey;
     var limit = params.Limit;

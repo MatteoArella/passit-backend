@@ -9,7 +9,6 @@ type FunctionParams = {
 };
 
 export const handler: APIGatewayProxyHandler = async (event, _: Context) => {
-
   const userAttributesMapping: any = {
     'sub': 'id',
     'email': 'email',
@@ -24,9 +23,7 @@ export const handler: APIGatewayProxyHandler = async (event, _: Context) => {
   const res: APIGatewayProxyResult = {
     statusCode: 404,
     body: JSON.stringify({
-      error: {
-        message: 'user not found'
-      }
+      message: 'user not found'
     })
   };
 
@@ -39,14 +36,17 @@ export const handler: APIGatewayProxyHandler = async (event, _: Context) => {
     return res;
   }
 
-  const user = response.Users?.pop()?.Attributes?.reduce((user: User, obj: CognitoIdentityServiceProvider.AttributeType) => {
+  const cognitoUser = response.Users?.pop();
+  const user = cognitoUser?.Attributes?.reduce((user: User, obj: CognitoIdentityServiceProvider.AttributeType) => {
     if (userAttributesMapping[obj.Name] !== undefined) {
       user[userAttributesMapping[obj.Name]] = obj.Value || '';
     }
     return user;
   }, {} as User) || undefined;
 
-  if (user !== undefined) {
+  if (user) {
+    user.createdAt = cognitoUser!.UserCreateDate?.toISOString()!;
+    user.updatedAt = cognitoUser!.UserLastModifiedDate?.toISOString();
     return { statusCode: 200, body: JSON.stringify(user) };
   } else {
     return res;

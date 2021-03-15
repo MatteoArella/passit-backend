@@ -15,6 +15,7 @@
     "@aws-cdk/core": "1.90.0",
     "@passit/api-service": "^1.0.0",
     "@passit/auth-service": "^1.0.0",
+    "@passit/insertions-service": "^1.0.0",
     "@passit/storage-service": "^1.0.0",
     "@passit/users-service": "^1.0.0",
     "dotenv": "^8.2.0"

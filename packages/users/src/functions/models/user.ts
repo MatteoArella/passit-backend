@@ -6,8 +6,6 @@ interface User {
   phoneNumber?: string;
   birthDate?: string;
   picture?: string;
-  createdAt: string;
-  updatedAt?: string;
   
   [key: string]: string | undefined;
 };

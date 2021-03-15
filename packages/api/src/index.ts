@@ -3,7 +3,7 @@ import * as apigateway from '@aws-cdk/aws-apigateway';
 import * as appsync from '@aws-cdk/aws-appsync';
 import * as cognito from '@aws-cdk/aws-cognito';
 import * as iam from '@aws-cdk/aws-iam';
-import * as core from '@passit/core-infra';
+import * as core from '@passit/core';
 import { join } from 'path';
 
 export interface ApiStackProps extends cdk.NestedStackProps {
@@ -18,17 +18,14 @@ export class ApiStack extends cdk.NestedStack {
     super(scope, id, props);
 
     const usersServiceRestApi = apigateway.RestApi.fromRestApiId(this, 'UsersServiceApiId', cdk.Fn.importValue('UsersServiceApiId'));
-    const insertionsServiceRestApi = apigateway.RestApi.fromRestApiId(this, 'InsertionsServiceApiId', cdk.Fn.importValue('InsertionsServiceApiId'));
+    const usersServiceApiStageName = cdk.Fn.importValue('UsersServiceApiStageName');
 
-    this.api = new appsync.GraphqlApi(this, 'PassItGraphApi', {
-      name: 'PassItGraphApi',
+    this.api = new appsync.GraphqlApi(this, 'GraphApi', {
+      name: 'GraphApi',
       schema: appsync.Schema.fromAsset(join(__dirname, 'assets/schema.graphql')),
       authorizationConfig: {
         defaultAuthorization: {
-          authorizationType: appsync.AuthorizationType.USER_POOL,
-          userPoolConfig: {
-            userPool: props.userPool
-          }
+          authorizationType: appsync.AuthorizationType.IAM
         }
       },
       xrayEnabled: true,
@@ -38,7 +35,16 @@ export class ApiStack extends cdk.NestedStack {
       }
     });
 
-    // users service
+    props.authenticatedRole.attachInlinePolicy(new iam.Policy(this, 'ApiAuthenticatedRoleIAMPolicy', {
+      statements: [
+        new iam.PolicyStatement({
+          actions: [ 'appsync:GraphQL' ],
+          effect: iam.Effect.ALLOW,
+          resources: [ `arn:aws:appsync:${this.region}:${this.account}:apis/${this.api.apiId}/*` ]
+        })
+      ]
+    }));
+
     const usersServiceDs = this.api.addHttpDataSource('UsersServiceDataSource', `https://${usersServiceRestApi.restApiId}.execute-api.${this.region}.amazonaws.com`, {
       authorizationConfig: {
         signingRegion: this.region,
@@ -60,48 +66,10 @@ export class ApiStack extends cdk.NestedStack {
     usersServiceDs.createResolver({
       typeName: 'Query',
       fieldName: 'me',
-      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/users/Query.me.req.vtl')),
+      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/users/Query.me.req.vtl'), {
+        stageName: usersServiceApiStageName
+      }),
       responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/users/Query.me.res.vtl'))
-    });
-
-    // insertions service
-    const insertionsServiceDs = this.api.addHttpDataSource('InsertionsServiceDataSource', `https://${insertionsServiceRestApi.restApiId}.execute-api.${this.region}.amazonaws.com`, {
-      authorizationConfig: {
-        signingRegion: this.region,
-        signingServiceName: 'execute-api'
-      }
-    });
-
-    iam.Role.fromRoleArn(this, 'InsertionsServiceDataSourceRole', insertionsServiceDs.ds.serviceRoleArn!)
-      .attachInlinePolicy(new iam.Policy(this, 'InsertionsServiceDataSourcePolicy', {
-        statements: [
-          new iam.PolicyStatement({
-            actions: [ 'execute-api:Invoke' ],
-            effect: iam.Effect.ALLOW,
-            resources: [ insertionsServiceRestApi.arnForExecuteApi() ]
-          })
-        ]
-      }));
-
-    insertionsServiceDs.createResolver({
-      typeName: 'Mutation',
-      fieldName: 'createInsertion',
-      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/insertions/Mutation.createInsertion.req.vtl')),
-      responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/insertions/Mutation.createInsertion.res.vtl'))
-    });
-
-    usersServiceDs.createResolver({
-      typeName: 'Insertion',
-      fieldName: 'tutor',
-      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/insertions/Insertion.Tutor.req.vtl')),
-      responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/insertions/Insertion.Tutor.res.vtl'))
-    });
-
-    insertionsServiceDs.createResolver({
-      typeName: 'User',
-      fieldName: 'insertions',
-      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/users/User.Insertions.req.vtl')),
-      responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/users/User.Insertions.res.vtl'))
     });
   }
 }

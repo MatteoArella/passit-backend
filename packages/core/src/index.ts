@@ -7,11 +7,11 @@ class Function extends lambdaNodejs.NodejsFunction {
   constructor(scope: cdk.Construct, id: string, props: lambdaNodejs.NodejsFunctionProps) {
     super(scope, id, {
       runtime: lambda.Runtime.NODEJS_12_X,
-      timeout: cdk.Duration.seconds(5),
+      timeout: cdk.Duration.seconds(60),
+      memorySize: 512,
       tracing: lambda.Tracing.ACTIVE,
       bundling: {
-        minify: true,
-        nodeModules: []
+        minify: true
       },
       ...props
     });

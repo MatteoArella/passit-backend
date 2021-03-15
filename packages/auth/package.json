@@ -19,7 +19,7 @@
     "@aws-cdk/custom-resources": "1.90.0",
     "@dicebear/avatars": "^4.5.2",
     "@dicebear/avatars-jdenticon-sprites": "^4.5.2",
-    "@passit/core-infra": "^1.0.0",
+    "@passit/core": "^1.0.0",
     "aws-lambda": "^1.0.6",
     "dotenv": "^8.2.0",
     "env-var": "^7.0.0",
@@ -36,6 +36,8 @@
     "rimraf": "~3.0.2"
   },
   "peerDependencies": {
+    "@aws-cdk/aws-iam": "1.90.0",
+    "@aws-cdk/aws-lambda": "1.90.0",
     "@testdeck/mocha": "^0.1.2",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.2.0",

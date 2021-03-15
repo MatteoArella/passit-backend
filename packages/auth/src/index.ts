@@ -6,7 +6,7 @@ import * as iam from '@aws-cdk/aws-iam';
 import { join } from 'path';
 import * as dotenv from 'dotenv';
 import env from 'env-var';
-import * as core from '@passit/core-infra';
+import * as core from '@passit/core';
 
 dotenv.config();
 
@@ -176,12 +176,6 @@ export class AuthStack extends cdk.NestedStack {
       ]
     });
 
-    // web client
-    const webClient = new cognito.UserPoolClient(this, 'WebClient', {
-      userPool: this.userPool,
-      preventUserExistenceErrors: true
-    });
-
     this.client.node.addDependency(googleIdentityProvider);
 
     this.identityPool = new cognito.CfnIdentityPool(this, 'IdentityPool', {
@@ -189,10 +183,6 @@ export class AuthStack extends cdk.NestedStack {
       cognitoIdentityProviders: [
         {
           clientId: this.client.userPoolClientId,
-          providerName: (this.userPool as cognito.UserPool).userPoolProviderName,
-        },
-        {
-          clientId: webClient.userPoolClientId,
           providerName: (this.userPool as cognito.UserPool).userPoolProviderName,
         }
       ],

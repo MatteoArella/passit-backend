@@ -2,6 +2,7 @@ import * as cdk from '@aws-cdk/core';
 import * as apigateway from '@aws-cdk/aws-apigateway';
 import * as appsync from '@aws-cdk/aws-appsync';
 import * as cognito from '@aws-cdk/aws-cognito';
+import * as es from '@aws-cdk/aws-elasticsearch';
 import * as iam from '@aws-cdk/aws-iam';
 import * as core from '@passit/core-infra';
 import { join } from 'path';
@@ -9,6 +10,7 @@ import { join } from 'path';
 export interface ApiStackProps extends cdk.NestedStackProps {
   userPool: cognito.IUserPool;
   authenticatedRole: iam.Role;
+  esDomain: es.Domain;
 }
 
 export class ApiStack extends cdk.NestedStack {
@@ -20,7 +22,7 @@ export class ApiStack extends cdk.NestedStack {
     const usersServiceRestApi = apigateway.RestApi.fromRestApiId(this, 'UsersServiceApiId', cdk.Fn.importValue('UsersServiceApiId'));
     const insertionsServiceRestApi = apigateway.RestApi.fromRestApiId(this, 'InsertionsServiceApiId', cdk.Fn.importValue('InsertionsServiceApiId'));
 
-    this.api = new appsync.GraphqlApi(this, 'PassItGraphApi', {
+    const api = new core.GraphqlApi(this, 'PassItGraphApi', {
       name: 'PassItGraphApi',
       schema: appsync.Schema.fromAsset(join(__dirname, 'assets/schema.graphql')),
       authorizationConfig: {
@@ -37,9 +39,10 @@ export class ApiStack extends cdk.NestedStack {
         fieldLogLevel: appsync.FieldLogLevel.ALL
       }
     });
+    this.api = api;
 
     // users service
-    const usersServiceDs = this.api.addHttpDataSource('UsersServiceDataSource', `https://${usersServiceRestApi.restApiId}.execute-api.${this.region}.amazonaws.com`, {
+    const usersServiceDs = api.addHttpDataSource('UsersServiceDataSource', `https://${usersServiceRestApi.restApiId}.execute-api.${this.region}.amazonaws.com`, {
       authorizationConfig: {
         signingRegion: this.region,
         signingServiceName: 'execute-api'
@@ -57,15 +60,8 @@ export class ApiStack extends cdk.NestedStack {
         ]
       }));
 
-    usersServiceDs.createResolver({
-      typeName: 'Query',
-      fieldName: 'me',
-      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/users/Query.me.req.vtl')),
-      responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/users/Query.me.res.vtl'))
-    });
-
     // insertions service
-    const insertionsServiceDs = this.api.addHttpDataSource('InsertionsServiceDataSource', `https://${insertionsServiceRestApi.restApiId}.execute-api.${this.region}.amazonaws.com`, {
+    const insertionsServiceDs = api.addHttpDataSource('InsertionsServiceDataSource', `https://${insertionsServiceRestApi.restApiId}.execute-api.${this.region}.amazonaws.com`, {
       authorizationConfig: {
         signingRegion: this.region,
         signingServiceName: 'execute-api'
@@ -83,6 +79,17 @@ export class ApiStack extends cdk.NestedStack {
         ]
       }));
 
+    // search service
+    const searchServiceDs = api.addElasticSearchDataSource('SearchServiceDataSource', props.esDomain);
+
+    // resolvers
+    usersServiceDs.createResolver({
+      typeName: 'Query',
+      fieldName: 'me',
+      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/users/Query.me.req.vtl')),
+      responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/users/Query.me.res.vtl'))
+    });
+
     insertionsServiceDs.createResolver({
       typeName: 'Mutation',
       fieldName: 'createInsertion',
@@ -97,11 +104,18 @@ export class ApiStack extends cdk.NestedStack {
       responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/insertions/Insertion.Tutor.res.vtl'))
     });
 
-    insertionsServiceDs.createResolver({
+    searchServiceDs.createResolver({
       typeName: 'User',
       fieldName: 'insertions',
       requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/users/User.Insertions.req.vtl')),
       responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/users/User.Insertions.res.vtl'))
+    });
+
+    searchServiceDs.createResolver({
+      typeName: 'Query',
+      fieldName: 'getInsertions',
+      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/insertions/Query.getInsertions.req.vtl')),
+      responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/insertions/Query.getInsertions.res.vtl'))
     });
   }
 }

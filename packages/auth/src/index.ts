@@ -39,7 +39,10 @@ export class AuthStack extends cdk.NestedStack {
     const preAuthenticationTrigger = new core.Function(this, 'PreAuthenticationLambda', {
       functionName: 'pre-authentication-function',
       entry: join(__dirname, 'triggers/preAuthentication.ts'),
-      handler: 'handler'
+      handler: 'handler',
+      bundling: {
+        nodeModules: []
+      }
     });
 
     const preTokenGenerationTrigger = new core.Function(this, 'PreTokenGenerationLambda', {

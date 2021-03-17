@@ -1,7 +1,15 @@
 import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as lambdaNodejs from '@aws-cdk/aws-lambda-nodejs';
-import { MappingTemplate } from './appsync';
+import {
+  GraphqlApi,
+  ElasticsearchDataSource,
+  MappingTemplate,
+} from './appsync';
+import {
+  DynamoDBStreamElasticSearchProps,
+  DynamoDBIndexElasticSearch
+} from './elasticsearch';
 
 class Function extends lambdaNodejs.NodejsFunction {
   constructor(scope: cdk.Construct, id: string, props: lambdaNodejs.NodejsFunctionProps) {
@@ -10,12 +18,11 @@ class Function extends lambdaNodejs.NodejsFunction {
       timeout: cdk.Duration.seconds(5),
       tracing: lambda.Tracing.ACTIVE,
       bundling: {
-        minify: true,
-        nodeModules: []
+        minify: true
       },
       ...props
     });
   }
 }
 
-export { Function, MappingTemplate };
+export { Function, GraphqlApi, ElasticsearchDataSource, MappingTemplate, DynamoDBStreamElasticSearchProps, DynamoDBIndexElasticSearch };

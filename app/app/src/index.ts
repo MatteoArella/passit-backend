@@ -4,6 +4,7 @@ import { StorageStack } from '@passit/storage-service';
 import { AuthStack } from '@passit/auth-service';
 import { UsersStack } from '@passit/users-service';
 import { InsertionsStack } from '@passit/insertions-service';
+import { SearchStack } from '@passit/search-service';
 
 class AppStack extends cdk.Stack {
   constructor(scope?: cdk.Construct, id?: string, props?: cdk.StackProps) {
@@ -19,11 +20,16 @@ class AppStack extends cdk.Stack {
       userPool: authStack.userPool
     });
 
-    const insertionsStack = new InsertionsStack(this, 'InsertionsStack');
+    const searchStack = new SearchStack(this, 'SearchStack');
+
+    const insertionsStack = new InsertionsStack(this, 'InsertionsStack', {
+      esDomain: searchStack.domain
+    });
 
     const apiStack = new ApiStack(this, 'ApiStack', {
       userPool: authStack.userPool,
-      authenticatedRole: authStack.authenticatedRole
+      authenticatedRole: authStack.authenticatedRole,
+      esDomain: searchStack.domain
     });
 
     apiStack.addDependency(usersStack);

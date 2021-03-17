@@ -1,5 +1,5 @@
 {
-  "name": "@passit/app",
+  "name": "@passit/search-service",
   "version": "1.0.0",
   "license": "MIT",
   "main": "src/index.ts",
@@ -7,22 +7,21 @@
     "clean": "rimraf -rf dist tsconfig.tsbuildinfo",
     "build": "yarn run clean && yarn run compile",
     "compile": "tsc -p tsconfig.json",
+    "pack": "yarn run build && yarn pack",
     "prepublishOnly": "yarn run build",
     "test": "mocha -c test/index.ts -r ts-node/register test/**/*.spec.ts --recursive",
     "start": "ts-node -r tsconfig-paths/register src/index.ts"
   },
   "dependencies": {
-    "@aws-cdk/core": "1.90.0",
-    "@passit/api-service": "^1.0.0",
-    "@passit/auth-service": "^1.0.0",
-    "@passit/insertions-service": "^1.0.0",
-    "@passit/search-service": "^1.0.0",
-    "@passit/storage-service": "^1.0.0",
-    "@passit/users-service": "^1.0.0",
+    "@aws-cdk/aws-elasticsearch": "1.90.0",
+    "@elastic/elasticsearch": "^7.11.0",
+    "aws-elasticsearch-connector": "^9.0.3",
     "dotenv": "^8.2.0"
   },
   "devDependencies": {
-    "@types/dotenv": "^8.2.0"
+    "@types/dotenv": "^8.2.0",
+    "recursive-copy-cli": "^1.0.14",
+    "rimraf": "~3.0.2"
   },
   "peerDependencies": {
     "@testdeck/mocha": "^0.1.2",

@@ -10,8 +10,8 @@ enum Sort {
 }
 
 type PageInfo {
-  endCursor: String
   hasNextPage: Boolean!
+  total: Int
 }
 
 type InsertionConnection {
@@ -29,7 +29,13 @@ type User implements Entity {
   picture: String
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime
-  insertions(filter: InsertionFilterInput, order: InsertionOrderInput, first: Int, after: String): InsertionConnection!
+  insertions(filter: UserInsertionsFilterInput, order: InsertionOrderInput, first: Int, after: Int): InsertionConnection!
+}
+
+type Location {
+  country: String!
+  state: String!
+  city: String!
 }
 
 type Insertion implements Entity {
@@ -37,106 +43,49 @@ type Insertion implements Entity {
   title: String!
   description: String!
   subject: String!
+  location: Location!
   tutor: User!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime
+}
+
+input LocationInput {
+  country: String!
+  state: String!
+  city: String!
 }
 
 input InsertionInput {
   title: String!
   description: String!
   subject: String!
+  location: LocationInput!
+}
+
+input LocationFilterInput {
+  country: String
+  state: String
+  city: String
+}
+
+input UserInsertionsFilterInput {
+  subject: String
+  location: LocationFilterInput
+}
+
+input InsertionFilterInput {
+  subject: String!
+  location: LocationFilterInput!
 }
 
 input InsertionOrderInput {
-  id: Sort
-  title: Sort
-  description: Sort
-  subject: Sort
-  tutor: Sort
   createdAt: Sort
   updatedAt: Sort
 }
 
-input StringFilterInput {
-  ne: String
-  eq: String
-  le: String
-  lt: String
-  ge: String
-  gt: String
-  contains: String
-  notContains: String
-  between: [String]
-  beginsWith: String
-}
-
-input IDFilterInput {
-  ne: ID
-  eq: ID
-  le: ID
-  lt: ID
-  ge: ID
-  gt: ID
-  contains: ID
-  notContains: ID
-  between: [ID]
-  beginsWith: ID
-}
-
-input BooleanFilterInput {
-  ne: Boolean
-  eq: Boolean
-}
-
-input IntFilterInput {
-  ne: Int
-  eq: Int
-  le: Int
-  lt: Int
-  ge: Int
-  gt: Int
-  contains: Int
-  notContains: Int
-  between: [Int]
-}
-
-input FloatFilterInput {
-  ne: Float
-  eq: Float
-  le: Float
-  lt: Float
-  ge: Float
-  gt: Float
-  contains: Float
-  notContains: Float
-  between: [Float]
-}
-
-input UserFilterInput {
-  id: IDFilterInput
-  email: StringFilterInput
-  familyName: StringFilterInput
-  givenName: StringFilterInput
-  phoneNumber: StringFilterInput
-  birthDate: StringFilterInput
-  picture: StringFilterInput
-  createdAt: StringFilterInput
-  updatedAt: StringFilterInput
-}
-
-input InsertionFilterInput {
-  id: IDFilterInput
-  title: StringFilterInput
-  description: StringFilterInput
-  subject: StringFilterInput
-  tutor: UserFilterInput
-  createdAt: StringFilterInput
-  updatedAt: StringFilterInput
-}
-
 type Query {
   me: User
+  getInsertions(filter: InsertionFilterInput!, order: InsertionOrderInput, first: Int, after: Int): InsertionConnection!
 }
 
 type Mutation {

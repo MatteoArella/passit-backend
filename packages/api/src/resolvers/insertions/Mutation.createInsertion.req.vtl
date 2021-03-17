@@ -10,6 +10,11 @@
       "title": "$util.escapeJavaScript($ctx.args.insertion.title)",
       "description": "$util.escapeJavaScript($ctx.args.insertion.description)",
       "subject": "$util.escapeJavaScript($ctx.args.insertion.subject)",
+      "location": {
+        "country": "$util.escapeJavaScript($ctx.args.insertion.location.country)",
+        "state": "$util.escapeJavaScript($ctx.args.insertion.location.state)",
+        "city": "$util.escapeJavaScript($ctx.args.insertion.location.city)"
+      },
       "tutorId": "$ctx.identity.sub"
     }
   }

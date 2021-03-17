@@ -15,20 +15,12 @@
           "must": [
             {
               "match": {
-                "tutorId": "$ctx.source.id"
-              }
-            }
-            #if(!$util.isNullOrBlank($ctx.args.filter.subject))
-            ,
-            {
-              "match": {
                 "subject": {
                   "query": "$util.escapeJavaScript($ctx.args.filter.subject)",
                   "fuzziness": "auto"
                 }
               }
             }
-            #end
             #if(!$util.isNullOrBlank($ctx.args.filter.location.city))
             ,
             {

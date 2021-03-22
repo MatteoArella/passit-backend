@@ -78,3 +78,4 @@ Service | Description
 -------------------- | ------------------------------------------
 [Users](./packages/users/README.md) | Provides User search.
 [Insertions](./packages/insertions/README.md) | Provides CRUD operations on Insertions.
+[Conversations](./packages/conversations/README.md) | Provides communication services between users.

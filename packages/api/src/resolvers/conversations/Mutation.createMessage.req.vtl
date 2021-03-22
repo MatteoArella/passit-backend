@@ -1,0 +1,29 @@
+#set($message = "mutation CreateMessage {
+  createMessage(input : {
+    authorId: ""$ctx.identity.sub"",
+    to: $util.toJson($context.arguments.input.to),
+    conversationId: $util.toJson($context.arguments.input.conversationId),
+    content: $util.toJson($context.arguments.input.content)
+  }) {
+    id
+    authorId
+    to
+    conversationId
+    content
+    createdAt
+    updatedAt
+  }
+}")
+{
+  "version": "2018-05-29",
+  "method": "POST",
+  "resourcePath": "/graphql",
+  "params": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "query": "$util.escapeJavaScript($message)"
+    }
+  }
+}

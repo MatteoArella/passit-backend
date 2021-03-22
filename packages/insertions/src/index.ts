@@ -222,7 +222,7 @@ export class InsertionsStack extends cdk.NestedStack {
           responseModels: { 'application/json': insertionModel }
         },
         {
-          statusCode: '400',
+          statusCode: '404',
           responseModels: { 'application/json': apigateway.Model.ERROR_MODEL }
         }
       ]

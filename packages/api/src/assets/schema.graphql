@@ -30,6 +30,8 @@ type User implements Entity {
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime
   insertions(filter: UserInsertionsFilterInput, order: InsertionOrderInput, first: Int, after: Int): InsertionConnection!
+  conversations(first: Int, after: String): ConvLinkConnection!
+  messages(filter: MessagesFilterInput!, first: Int, after: String): MessageConnection!
 }
 
 type Location {
@@ -83,17 +85,88 @@ input InsertionOrderInput {
   updatedAt: Sort
 }
 
+type Message implements Entity {
+  id: ID!
+  content: String!
+  author: User!
+  to: ID!
+  conversation: Conversation!
+  conversationId: ID!
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime
+}
+
+type TokenPageInfo {
+  hasNextPage: Boolean!
+  nextToken: String
+}
+
+input MessagesFilterInput {
+  conversationId: ID!
+}
+
+type MessageConnection {
+  items: [Message]
+  pageInfo: TokenPageInfo!
+}
+
+type Conversation implements Entity {
+	id: ID!
+  associated: [ConvLink!]!
+	createdAt: AWSDateTime!
+	updatedAt: AWSDateTime
+}
+
+type ConvLink implements Entity {
+  id: ID!
+  user: User!
+  userId: ID!
+  conversation: Conversation!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+}
+
+type ConvLinkConnection {
+  items: [ConvLink]
+  pageInfo: TokenPageInfo!
+}
+
 type Query {
   me: User
   getInsertions(filter: InsertionFilterInput!, order: InsertionOrderInput, first: Int, after: Int): InsertionConnection!
   getInsertion(insertion: ID!): Insertion
+  getConversations(first: Int, after: String): ConvLinkConnection!
+  getMessages(filter: MessagesFilterInput!, first: Int, after: String): MessageConnection!
+}
+
+input ConversationInput {
+  tutorId: ID!
+}
+
+input MessageInput {
+  to: ID!
+  conversationId: ID!
+  content: String!
 }
 
 type Mutation {
   createInsertion(insertion: InsertionInput!): Insertion
+
+  createConversation(input: ConversationInput!): ConvLink
+  createMessage(input: MessageInput!): Message
+}
+
+type Subscription {
+  onCreateConversation(userId: ID!): ConvLink
+    @aws_subscribe(mutations: ["createConversation"])
+  onCreateMessageFilterByConversationId(conversationId: ID!): Message
+    @aws_subscribe(mutations: ["createMessage"])
+  onCreateMessageFilterByDest(to: ID!): Message
+    @aws_subscribe(mutations: ["createMessage"])
 }
 
 schema {
   query: Query
   mutation: Mutation
+  subscription: Subscription
 }

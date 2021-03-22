@@ -18,6 +18,7 @@ export class AuthStack extends cdk.NestedStack {
   public readonly userPool: cognito.IUserPool;
   public readonly identityPool: cognito.CfnIdentityPool
   public readonly client: cognito.UserPoolClient;
+  public readonly webClient: cognito.UserPoolClient;
   public readonly clientSecret: string;
   public readonly authenticatedRole: iam.Role;
 
@@ -180,7 +181,7 @@ export class AuthStack extends cdk.NestedStack {
     });
 
     // web client
-    const webClient = new cognito.UserPoolClient(this, 'WebClient', {
+    this.webClient = new cognito.UserPoolClient(this, 'WebClient', {
       userPool: this.userPool,
       preventUserExistenceErrors: true
     });
@@ -195,7 +196,7 @@ export class AuthStack extends cdk.NestedStack {
           providerName: (this.userPool as cognito.UserPool).userPoolProviderName,
         },
         {
-          clientId: webClient.userPoolClientId,
+          clientId: this.webClient.userPoolClientId,
           providerName: (this.userPool as cognito.UserPool).userPoolProviderName,
         }
       ],

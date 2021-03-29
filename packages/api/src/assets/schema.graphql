@@ -86,6 +86,7 @@ input InsertionOrderInput {
 type Query {
   me: User
   getInsertions(filter: InsertionFilterInput!, order: InsertionOrderInput, first: Int, after: Int): InsertionConnection!
+  getInsertion(insertion: ID!): Insertion
 }
 
 type Mutation {

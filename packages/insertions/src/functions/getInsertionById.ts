@@ -17,6 +17,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       TableName: process.env.INSERTIONS_TABLE_NAME!,
       Key: { 'id': params.insertionId }
     }).promise();
+    if (!insertion) return res.status(404).json({ message: 'insertion not found' })
     return res.status(200).json(insertion as Insertion);
   } catch (err) {
     return res.status(404).json({ message: JSON.stringify(err) });

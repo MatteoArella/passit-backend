@@ -1,0 +1,11 @@
+#set($insertionId = $util.urlEncode($ctx.args.insertion))
+{
+  "version": "2018-05-29",
+  "method": "GET",
+  "resourcePath": "/v1/insertions/$insertionId",
+  "params": {
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

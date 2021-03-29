@@ -117,5 +117,12 @@ export class ApiStack extends cdk.NestedStack {
       requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/insertions/Query.getInsertions.req.vtl')),
       responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/insertions/Query.getInsertions.res.vtl'))
     });
+
+    insertionsServiceDs.createResolver({
+      typeName: 'Query',
+      fieldName: 'getInsertion',
+      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/insertions/Query.getInsertion.req.vtl')),
+      responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/insertions/Query.getInsertion.res.vtl'))
+    });
   }
 }

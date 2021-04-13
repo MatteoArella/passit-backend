@@ -1,0 +1,17 @@
+#set($result = {})
+#set($result.items = [])
+#set($result.pageInfo = {})
+
+#foreach($entry in $context.result.hits.hits)
+  $util.qr($result.items.add($entry.get("_source")))
+#end
+
+#set($total = $context.result.hits.total.value)
+#set($result.pageInfo.total = $total)
+#set($remainings = $total - $ctx.args.first * $ctx.args.after)
+#if($remainings > 0)
+  #set($result.pageInfo.hasNextPage = true)
+#else
+  #set($result.pageInfo.hasNextPage = false)
+#end
+$util.toJson($result)

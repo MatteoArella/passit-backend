@@ -134,6 +134,7 @@ type ConvLinkConnection {
 type Query {
   me: User
   getInsertions(filter: InsertionFilterInput!, order: InsertionOrderInput, first: Int, after: Int): InsertionConnection!
+  getUserInsertions(userID: ID!, order: InsertionOrderInput, first: Int, after: Int): InsertionConnection!
   getInsertion(insertion: ID!): Insertion
   getConversations(first: Int, after: String): ConvLinkConnection!
   getMessages(filter: MessagesFilterInput!, first: Int, after: String): MessageConnection!

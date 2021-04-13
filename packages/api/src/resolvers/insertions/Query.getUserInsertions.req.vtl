@@ -1,0 +1,30 @@
+#set($first = $util.defaultIfNull($ctx.args.first, 20))
+#set($after = $util.defaultIfNull($ctx.args.after, 0))
+#set($createdAtOrder = $util.defaultIfNull($ctx.args.order.createdAt, "desc"))
+#set($updatedAtOrder = $util.defaultIfNull($ctx.args.order.updatedAt, "desc"))
+{
+  "version": "2017-02-28",
+  "operation": "GET",
+  "path": "/insertions/_search",
+  "params": {
+    "body": {
+      "size": $first,
+      "from": $after,
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "match": {
+                "tutorId": "$util.escapeJavaScript($ctx.args.userID)"
+              }
+            }
+          ]
+        }
+      },
+      "sort": [
+        { "createdAt": "$createdAtOrder" },
+        { "updatedAt": "$updatedAtOrder" }
+      ]
+    }
+  }
+}

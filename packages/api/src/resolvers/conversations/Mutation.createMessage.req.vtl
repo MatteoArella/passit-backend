@@ -1,9 +1,9 @@
 #set($message = "mutation CreateMessage {
   createMessage(input : {
     authorId: ""$ctx.identity.sub"",
-    to: $util.toJson($context.arguments.input.to),
-    conversationId: $util.toJson($context.arguments.input.conversationId),
-    content: $util.toJson($context.arguments.input.content)
+    to: ""$context.arguments.input.to"",
+    conversationId: ""$context.arguments.input.conversationId"",
+    content: ""$context.arguments.input.content""
   }) {
     id
     authorId
@@ -23,7 +23,7 @@
       "Content-Type": "application/json"
     },
     "body": {
-      "query": "$util.escapeJavaScript($message)"
+      "query": "$util.escapeJavaScript($message).replaceAll("\\'", "'")"
     }
   }
 }

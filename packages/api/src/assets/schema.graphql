@@ -93,7 +93,7 @@ type Message implements Entity {
   conversation: Conversation!
   conversationId: ID!
   createdAt: AWSDateTime!
-	updatedAt: AWSDateTime
+  updatedAt: AWSDateTime
 }
 
 type TokenPageInfo {
@@ -111,10 +111,10 @@ type MessageConnection {
 }
 
 type Conversation implements Entity {
-	id: ID!
+  id: ID!
   associated: [ConvLink!]!
-	createdAt: AWSDateTime!
-	updatedAt: AWSDateTime
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
 }
 
 type ConvLink implements Entity {

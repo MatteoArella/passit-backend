@@ -11,6 +11,7 @@ export interface ApiStackProps extends cdk.NestedStackProps {
   userPool: cognito.IUserPool;
   authenticatedRole: iam.Role;
   esDomain: es.Domain;
+  conversationsServiceApi: appsync.GraphqlApi;
 }
 
 export class ApiStack extends cdk.NestedStack {
@@ -82,6 +83,19 @@ export class ApiStack extends cdk.NestedStack {
     // search service
     const searchServiceDs = api.addElasticSearchDataSource('SearchServiceDataSource', props.esDomain);
 
+    // conversations service
+    const conversationsServiceGraphqlUrl = cdk.Fn.join('', cdk.Fn.split('/graphql', props.conversationsServiceApi.graphqlUrl));
+    const conversationsServiceDs = api.addHttpDataSource('ConversationsServiceDataSource', conversationsServiceGraphqlUrl, {
+      authorizationConfig: {
+        signingRegion: this.region,
+        signingServiceName: 'appsync'
+      }
+    });
+    const conversationsSubsDs = api.addNoneDataSource('ConversationsServiceSubsDataSource');
+
+    const conversationsServiceDSRole = iam.Role.fromRoleArn(this, 'ConversationsServiceDataSourceRole', conversationsServiceDs.ds.serviceRoleArn!);
+    props.conversationsServiceApi.grant(conversationsServiceDSRole, appsync.IamResource.all(), 'appsync:GraphQL');
+
     // resolvers
     usersServiceDs.createResolver({
       typeName: 'Query',
@@ -123,6 +137,90 @@ export class ApiStack extends cdk.NestedStack {
       fieldName: 'getInsertion',
       requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/insertions/Query.getInsertion.req.vtl')),
       responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/insertions/Query.getInsertion.res.vtl'))
+    });
+
+    conversationsServiceDs.createResolver({
+      typeName: 'Mutation',
+      fieldName: 'createConversation',
+      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/Mutation.createConversation.req.vtl')),
+      responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/Mutation.createConversation.res.vtl'))
+    });
+
+    conversationsServiceDs.createResolver({
+      typeName: 'User',
+      fieldName: 'conversations',
+      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/users/User.Conversations.req.vtl')),
+      responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/users/User.Conversations.res.vtl'))
+    });
+
+    usersServiceDs.createResolver({
+      typeName: 'ConvLink',
+      fieldName: 'user',
+      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/ConvLink.User.req.vtl')),
+      responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/ConvLink.User.res.vtl'))
+    });
+
+    conversationsServiceDs.createResolver({
+      typeName: 'Mutation',
+      fieldName: 'createMessage',
+      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/Mutation.createMessage.req.vtl')),
+      responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/Mutation.createMessage.res.vtl'))
+    });
+
+    usersServiceDs.createResolver({
+      typeName: 'Message',
+      fieldName: 'author',
+      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/Message.Author.req.vtl')),
+      responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/Message.Author.res.vtl'))
+    });
+
+    conversationsServiceDs.createResolver({
+      typeName: 'User',
+      fieldName: 'messages',
+      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/users/User.Messages.req.vtl')),
+      responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/users/User.Messages.res.vtl'))
+    });
+
+    conversationsServiceDs.createResolver({
+      typeName: 'Conversation',
+      fieldName: 'associated',
+      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/Conversation.Associated.req.vtl')),
+      responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/Conversation.Associated.res.vtl'))
+    });
+
+    conversationsServiceDs.createResolver({
+      typeName: 'ConvLink',
+      fieldName: 'conversation',
+      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/ConvLink.Conversation.req.vtl')),
+      responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/ConvLink.Conversation.res.vtl'))
+    });
+
+    conversationsServiceDs.createResolver({
+      typeName: 'Message',
+      fieldName: 'conversation',
+      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/Message.Conversation.req.vtl')),
+      responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/Message.Conversation.res.vtl'))
+    });
+
+    conversationsSubsDs.createResolver({
+      typeName: 'Subscription',
+      fieldName: 'onCreateConversation',
+      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/Subscription.OnCreateConversation.req.vtl')),
+      responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/Subscription.OnCreateConversation.res.vtl'))
+    });
+
+    conversationsServiceDs.createResolver({
+      typeName: 'Query',
+      fieldName: 'getConversations',
+      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/Query.getConversations.req.vtl')),
+      responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/Query.getConversations.res.vtl'))
+    });
+
+    conversationsServiceDs.createResolver({
+      typeName: 'Query',
+      fieldName: 'getMessages',
+      requestMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/Query.getMessages.req.vtl')),
+      responseMappingTemplate: core.MappingTemplate.fromFile(join(__dirname, 'resolvers/conversations/Query.getMessages.res.vtl'))
     });
   }
 }

@@ -13,7 +13,7 @@ export class DynamoDB<T> extends Dynamo.DocumentClient {
     super({ apiVersion: '2012-08-10', ...options });
   }
 
-  async getData(params: QueryParamsInput) {
+  async getData(params: QueryParamsInput): Promise<EntityConnection<T>> {
     var after = params.ExclusiveStartKey;
     var limit = params.Limit;
     const entityConnection: EntityConnection<T> = {
@@ -33,16 +33,7 @@ export class DynamoDB<T> extends Dynamo.DocumentClient {
       }).promise();
       entityConnection.items.push(...items as T[]);
       after = nextToken;
-      if (after) {
-        const { LastEvaluatedKey: nextToken } = await query({
-          ...params,
-          Limit: 1,
-          ExclusiveStartKey: after
-        }).promise();
-        if (nextToken) {
-          entityConnection.after = after['id'];
-        }
-      }
+      entityConnection.after = after ? after['id'] : undefined;
       if (limit) {
         if (entityConnection.items.length >= limit) {
           return entityConnection;

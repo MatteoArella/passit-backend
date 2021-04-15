@@ -5,10 +5,15 @@ import { AuthStack } from '@passit/auth-service';
 import { UsersStack } from '@passit/users-service';
 import { InsertionsStack } from '@passit/insertions-service';
 import { SearchStack } from '@passit/search-service';
+import { ConversationsStack } from '@passit/conversations-service';
 
 class AppStack extends cdk.Stack {
   constructor(scope?: cdk.Construct, id?: string, props?: cdk.StackProps) {
     super(scope, id, props);
+
+    const conversationsStack = new ConversationsStack(this, 'ConversationsStack');
+
+    const searchStack = new SearchStack(this, 'SearchStack');
 
     const storageStack = new StorageStack(this, 'StorageStack');
 
@@ -20,8 +25,6 @@ class AppStack extends cdk.Stack {
       userPool: authStack.userPool
     });
 
-    const searchStack = new SearchStack(this, 'SearchStack');
-
     const insertionsStack = new InsertionsStack(this, 'InsertionsStack', {
       esDomain: searchStack.domain
     });
@@ -29,11 +32,13 @@ class AppStack extends cdk.Stack {
     const apiStack = new ApiStack(this, 'ApiStack', {
       userPool: authStack.userPool,
       authenticatedRole: authStack.authenticatedRole,
-      esDomain: searchStack.domain
+      esDomain: searchStack.domain,
+      conversationsServiceApi: conversationsStack.api
     });
 
     apiStack.addDependency(usersStack);
     apiStack.addDependency(insertionsStack);
+    apiStack.addDependency(conversationsStack);
 
     new cdk.CfnOutput(this, 'UserPoolId', {
       value: authStack.userPool.userPoolId
@@ -45,6 +50,10 @@ class AppStack extends cdk.Stack {
 
     new cdk.CfnOutput(this, 'UserPoolAppClientSecret', {
       value: authStack.clientSecret
+    });
+
+    new cdk.CfnOutput(this, 'UserPoolWebClientId', {
+      value: authStack.webClient.userPoolClientId
     });
 
     new cdk.CfnOutput(this, 'GoogleClientId', {

@@ -1,46 +1,40 @@
 {
-  "name": "@passit/core-infra",
+  "name": "@passit/conversations-service",
   "version": "1.0.0",
   "license": "MIT",
   "main": "src/index.ts",
   "scripts": {
     "clean": "rimraf -rf dist tsconfig.tsbuildinfo",
     "build": "yarn run clean && yarn run compile",
-    "compile": "tsc -p tsconfig.json",
-    "pack": "yarn run build && yarn pack",
+    "compile": "recursive-copy src/assets dist/assets && tsc -p tsconfig.json",
     "prepublishOnly": "yarn run build",
     "test": "mocha -c test/index.ts -r ts-node/register test/**/*.spec.ts --recursive",
     "start": "ts-node -r tsconfig-paths/register src/index.ts"
   },
   "dependencies": {
-    "@aws-cdk/aws-lambda": "1.90.0",
-    "@aws-cdk/aws-lambda-nodejs": "1.90.0",
-    "@aws-cdk/aws-appsync": "1.90.0",
-    "@aws-cdk/aws-elasticsearch": "1.90.0",
     "@aws-cdk/aws-dynamodb": "1.90.0",
-    "@aws-cdk/custom-resources": "1.90.0",
-    "@aws-cdk/aws-lambda-event-sources": "1.90.0",
-    "aws-elasticsearch-connector": "^9.0.3",
-    "@elastic/elasticsearch": "^7.11.0",
+    "@aws-cdk/aws-appsync": "1.90.0",
+    "@aws-cdk/aws-iam": "1.90.0",
     "@aws-cdk/core": "1.90.0",
-    "aws-sdk": "^2.809.0",
+    "@passit/core-functions": "^1.0.0",
+    "@passit/core-infra": "^1.0.0",
     "aws-lambda": "^1.0.6",
-    "mustache": "^4.1.0"
+    "dotenv": "^8.2.0",
+    "moment": "^2.29.1",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.66",
-    "@types/mustache": "^4.1.0",
-    "@types/node": "^14.14.35",
     "recursive-copy-cli": "^1.0.14",
-    "rimraf": "~3.0.2"
+    "rimraf": "~3.0.2",
+    "tsoa": "^3.4.0"
   },
   "peerDependencies": {
-    "@aws-cdk/aws-lambda": "1.90.0",
-    "@aws-cdk/aws-appsync": "1.90.0",
     "@testdeck/mocha": "^0.1.2",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.2.0",
     "@types/node": "^14.14.20",
+    "aws-sdk": "^2.809.0",
     "chai": "^4.2.0",
     "mocha": "^8.2.1",
     "ts-node": "^9.1.1",

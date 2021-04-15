@@ -1,0 +1,33 @@
+#set($first = $util.defaultIfNull($ctx.args.first, 20))
+#set($after = $util.defaultIfNull($ctx.args.after, ""))
+#set($messages = "query GetUserConversationMessages {
+  getMessages(filter : {
+    conversationId: $util.toJson($ctx.args.filter.conversationId)
+  }, first: $first, after: ""$after"") {
+    items {
+      id
+      authorId
+      conversationId
+      content
+      createdAt
+      updatedAt
+    }
+    pageInfo {
+      hasNextPage
+      nextToken
+    }
+  }
+}")
+{
+  "version": "2018-05-29",
+  "method": "POST",
+  "resourcePath": "/graphql",
+  "params": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "query": "$util.escapeJavaScript($messages)"
+    }
+  }
+}

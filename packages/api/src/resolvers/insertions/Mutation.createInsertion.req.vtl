@@ -7,13 +7,13 @@
       "Content-Type": "application/json"
     },
     "body": {
-      "title": "$util.escapeJavaScript($ctx.args.insertion.title)",
-      "description": "$util.escapeJavaScript($ctx.args.insertion.description)",
-      "subject": "$util.escapeJavaScript($ctx.args.insertion.subject)",
+      "title": "$util.escapeJavaScript($ctx.args.insertion.title).replaceAll("\\'", "'")",
+      "description": "$util.escapeJavaScript($ctx.args.insertion.description).replaceAll("\\'", "'")",
+      "subject": "$util.escapeJavaScript($ctx.args.insertion.subject).replaceAll("\\'", "'")",
       "location": {
-        "country": "$util.escapeJavaScript($ctx.args.insertion.location.country)",
-        "state": "$util.escapeJavaScript($ctx.args.insertion.location.state)",
-        "city": "$util.escapeJavaScript($ctx.args.insertion.location.city)"
+        "country": "$util.escapeJavaScript($ctx.args.insertion.location.country).replaceAll("\\'", "'")",
+        "state": "$util.escapeJavaScript($ctx.args.insertion.location.state).replaceAll("\\'", "'")",
+        "city": "$util.escapeJavaScript($ctx.args.insertion.location.city).replaceAll("\\'", "'")"
       },
       "tutorId": "$ctx.identity.sub"
     }

@@ -19,8 +19,8 @@ paths:
     get:
       operationId: "GetInsertionById"
       responses:
-        "400":
-          description: "400 response"
+        "404":
+          description: "404 response"
           content:
             application/json:
               schema:
@@ -31,6 +31,47 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Insertion"
+      security:
+      - sigv4: []
+    put:
+      operationId: "UpdateInsertion"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateInsertion"
+        required: true
+      responses:
+        "404":
+          description: "404 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Insertion"
+        "400":
+          description: "400 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: "500 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "403 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
       security:
       - sigv4: []
   /insertions:
@@ -95,9 +136,32 @@ paths:
       - sigv4: []
 components:
   schemas:
+    UpdateInsertion:
+      required:
+      - "tutorId"
+      type: "object"
+      properties:
+        tutorId:
+          type: "string"
+          description: "the ID of the tutor who created the insertion"
+        subject:
+          type: "string"
+          description: "the subject of the insertion"
+        description:
+          type: "string"
+          description: "the description of the insertion"
+        location:
+          $ref: "#/components/schemas/Location"
+        title:
+          type: "string"
+          description: "the title of the insertion"
+        status:
+          type: "string"
+          description: "the status of the insertion (OPEN/CLOSED)"
     Insertion:
       required:
       - "description"
+      - "location"
       - "subject"
       - "title"
       - "tutorId"
@@ -115,12 +179,17 @@ components:
         description:
           type: "string"
           description: "the description of the insertion"
+        location:
+          $ref: "#/components/schemas/Location"
         id:
           type: "string"
           description: "the ID of the insertion"
         title:
           type: "string"
           description: "the title of the insertion"
+        status:
+          type: "string"
+          description: "the status of the insertion (OPEN/CLOSED)"
         updatedAt:
           type: "string"
           description: "the last modification date of the insertion"
@@ -131,8 +200,6 @@ components:
         message:
           type: "string"
     InsertionConnection:
-      required:
-      - "items"
       type: "object"
       properties:
         after:
@@ -142,6 +209,22 @@ components:
           type: "array"
           items:
             $ref: "#/components/schemas/Insertion"
+    Location:
+      required:
+      - "city"
+      - "country"
+      - "state"
+      type: "object"
+      properties:
+        country:
+          type: "string"
+          description: "the country where the insertion is offered"
+        city:
+          type: "string"
+          description: "the city where the insertion is offered"
+        state:
+          type: "string"
+          description: "the state where the insertion is offered"
   securitySchemes:
     sigv4:
       type: "apiKey"

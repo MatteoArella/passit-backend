@@ -2,7 +2,7 @@ import { APIGatewayProxyHandler } from 'aws-lambda';
 import { HttpResponse, HttpErrorResponse, DynamoDB } from '@passit/core-functions';
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
-import { Insertion } from './models/insertion';
+import { Insertion, InsertionStatus } from './models/insertion';
 import { Location } from './models/location';
 
 type FunctionParams = {
@@ -25,6 +25,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   const datetime = moment().toISOString();
   const insertion: Insertion = {
     id: uuidv4(),
+    status: InsertionStatus.OPEN,
     createdAt: datetime,
     updatedAt: datetime,
     ...params

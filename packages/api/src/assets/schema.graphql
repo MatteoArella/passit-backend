@@ -40,6 +40,11 @@ type Location {
   city: String!
 }
 
+enum InsertionStatus {
+  OPEN
+  CLOSED
+}
+
 type Insertion implements Entity {
   id: ID!
   title: String!
@@ -47,6 +52,7 @@ type Insertion implements Entity {
   subject: String!
   location: Location!
   tutor: User!
+  status: InsertionStatus!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime
 }
@@ -62,6 +68,15 @@ input InsertionInput {
   description: String!
   subject: String!
   location: LocationInput!
+}
+
+input InsertionUpdateInput {
+  id: ID!
+  title: String
+  description: String
+  subject: String
+  location: LocationInput
+  status: InsertionStatus
 }
 
 input LocationFilterInput {
@@ -152,6 +167,7 @@ input MessageInput {
 
 type Mutation {
   createInsertion(insertion: InsertionInput!): Insertion
+  updateInsertion(insertion: InsertionUpdateInput!): Insertion
 
   createConversation(input: ConversationInput!): ConvLink
   createMessage(input: MessageInput!): Message

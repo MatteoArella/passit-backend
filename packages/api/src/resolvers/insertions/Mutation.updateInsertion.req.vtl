@@ -1,0 +1,33 @@
+#set($body = {})
+$util.qr($body.put("tutorId", "$ctx.identity.sub"))
+
+#if(!$util.isNullOrBlank($ctx.args.insertion.title))
+  $util.qr($body.put("title", $util.escapeJavaScript($ctx.args.insertion.title).replaceAll("\\'", "'")))
+#end
+#if(!$util.isNullOrBlank($ctx.args.insertion.description))
+  $util.qr($body.put("description", $util.escapeJavaScript($ctx.args.insertion.description).replaceAll("\\'", "'")))
+#end
+#if(!$util.isNullOrBlank($ctx.args.insertion.subject))
+  $util.qr($body.put("subject", $util.escapeJavaScript($ctx.args.insertion.subject).replaceAll("\\'", "'")))
+#end
+#if(!$util.isNullOrBlank($ctx.args.insertion.location))
+  #set($location = {})
+  $util.qr($location.put("city", $util.escapeJavaScript($ctx.args.insertion.location.city).replaceAll("\\'", "'")))
+  $util.qr($location.put("country", $util.escapeJavaScript($ctx.args.insertion.location.country).replaceAll("\\'", "'")))
+  $util.qr($location.put("state", $util.escapeJavaScript($ctx.args.insertion.location.staate).replaceAll("\\'", "'")))
+  $util.qr($body.put("location", $location))
+#end
+#if(!$util.isNullOrBlank($ctx.args.insertion.status))
+  $util.qr($body.put("status", "$ctx.args.insertion.status"))
+#end
+{
+  "version": "2018-05-29",
+  "method": "PUT",
+  "resourcePath": "/v1/insertions/$ctx.args.insertion.id",
+  "params": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": $util.toJson($body)
+  }
+}

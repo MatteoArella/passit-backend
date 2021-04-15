@@ -20,6 +20,11 @@
                   "fuzziness": "auto"
                 }
               }
+            },
+            {
+              "match": {
+                "status": "OPEN"
+              }
             }
             #if(!$util.isNullOrBlank($ctx.args.filter.location.city))
             ,
@@ -58,8 +63,8 @@
         }
       },
       "sort": [
-        { "createdAt": "$createdAtOrder" },
         { "updatedAt": "$updatedAtOrder" }
+        { "createdAt": "$createdAtOrder" },
       ]
     }
   }

@@ -1,0 +1,5 @@
+#if($ctx.identity.sub != $ctx.args.to)
+  $util.unauthorized()
+#else
+  null
+#end

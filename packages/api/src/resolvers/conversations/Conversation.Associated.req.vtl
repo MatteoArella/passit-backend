@@ -1,0 +1,24 @@
+#set($associated = "query GetConversationAssociatedUser {
+  getConvLinks(filter : {
+    conversationId: ""$ctx.source.id""
+  }) {
+    id
+    userId
+    conversationId
+    createdAt
+    updatedAt
+  }
+}")
+{
+  "version": "2018-05-29",
+  "method": "POST",
+  "resourcePath": "/graphql",
+  "params": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "query": "$util.escapeJavaScript($associated)"
+    }
+  }
+}

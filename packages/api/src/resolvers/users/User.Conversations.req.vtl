@@ -1,0 +1,36 @@
+#if($ctx.identity.sub != $ctx.source.id)
+  $util.unauthorized()
+#else
+#set($first = $util.defaultIfNull($ctx.args.first, 20))
+#set($after = $util.defaultIfNull($ctx.args.after, ""))
+#set($conversations = "query GetUserConversations {
+  getConversations(filter: {
+    userId: ""$ctx.source.id""
+  }, first: $first, after: ""$after"") {
+    items {
+      id
+      userId
+      conversationId
+      createdAt
+      updatedAt
+    }
+    pageInfo {
+      hasNextPage
+      nextToken
+    }
+  }
+}")
+{
+  "version": "2018-05-29",
+  "method": "POST",
+  "resourcePath": "/graphql",
+  "params": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "query": "$util.escapeJavaScript($conversations)"
+    }
+  }
+}
+#end

@@ -1,0 +1,89 @@
+interface Entity {
+  id: ID!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+}
+
+type TokenPageInfo {
+  hasNextPage: Boolean!
+  nextToken: String
+}
+
+input ConversationFilterInput {
+  conversationId: ID!
+}
+
+input ConversationsFilterInput {
+  userId: ID!
+}
+
+input ConvLinkFilterInput {
+  conversationId: ID!
+}
+
+input MessagesFilterInput {
+  conversationId: ID!
+}
+
+type Conversation implements Entity {
+	id: ID!
+	createdAt: AWSDateTime!
+	updatedAt: AWSDateTime
+}
+
+type ConvLink implements Entity {
+  id: ID!
+  userId: ID!
+  conversationId: ID!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+}
+
+type ConvLinkConnection {
+  items: [ConvLink]
+  pageInfo: TokenPageInfo!
+}
+
+type Message implements Entity {
+  id: ID!
+  content: String!
+  authorId: ID!
+  to: ID!
+  conversationId: ID!
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime
+}
+
+type MessageConnection {
+  items: [Message]
+  pageInfo: TokenPageInfo!
+}
+
+type Query {
+  getConversation(filter: ConversationFilterInput): Conversation
+  getConversations(filter: ConversationsFilterInput!, first: Int, after: String): ConvLinkConnection!
+  getConvLinks(filter: ConvLinkFilterInput!): [ConvLink!]!
+  getMessages(filter: MessagesFilterInput!, first: Int, after: String): MessageConnection!
+}
+
+input ConversationInput {
+  userId: ID!
+  tutorId: ID!
+}
+
+input MessageInput {
+  content: String!
+  authorId: ID!
+  to: ID!
+  conversationId: ID!
+}
+
+type Mutation {
+  createConversation(input: ConversationInput!): ConvLink
+  createMessage(input: MessageInput!): Message
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}

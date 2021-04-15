@@ -1,0 +1,25 @@
+#if($ctx.identity.sub != $ctx.args.to)
+  $util.unauthorized()
+#else
+{
+  "version": "2017-02-28",
+  "payload": $util.toJson({
+    "id": "",
+    "content": "",
+    "author": {
+    	"id": "",
+      "email": "",
+      "familyName": "",
+      "givenName": "",
+      "createdAt": ""
+    },
+    "to": "",
+    "conversation": {
+    	"id": "",
+      "createdAt": ""
+    },
+    "conversationId": "",
+    "createdAt": ""
+  })
+}
+#end

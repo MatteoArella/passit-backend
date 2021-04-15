@@ -1,0 +1,17 @@
+#set($id = $util.autoId())
+#set($datetime = $util.time.nowISO8601())
+{
+  "version": "2017-02-28",
+  "operation": "PutItem",
+  "key": {
+    "id": $util.dynamodb.toDynamoDBJson($id)
+  },
+  "attributeValues" : {
+    "authorId": $util.dynamodb.toDynamoDBJson($context.arguments.input.authorId),
+    "to": $util.dynamodb.toDynamoDBJson($context.arguments.input.to),
+    "conversationId": $util.dynamodb.toDynamoDBJson($context.arguments.input.conversationId),
+    "content": $util.dynamodb.toDynamoDBJson($context.arguments.input.content),
+    "createdAt": $util.dynamodb.toDynamoDBJson($datetime),
+    "updatedAt": $util.dynamodb.toDynamoDBJson($datetime)
+  }
+}

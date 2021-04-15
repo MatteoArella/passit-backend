@@ -1,0 +1,9 @@
+#set($body = $util.parseJson($context.result))
+#set($result = {
+  "items" : $$context.result.items,
+  "pageInfo" : {}
+})
+#set($hasNextPage = !$util.isNull($$context.result.after))
+$util.qr($result.pageInfo.put("hasNextPage", $hasNextPage))
+$util.qr($result.pageInfo.put("nextToken", $util.defaultIfNull($$context.result.after, null)))
+$util.toJson($result)

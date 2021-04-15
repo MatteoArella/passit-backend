@@ -87,13 +87,24 @@ export class InsertionsStack extends cdk.NestedStack {
       }
     });
 
+    const updateInsertionLambda = new core.Function(this, 'UpdateInsertionLambda', {
+      functionName: 'update-insertion-function',
+      entry: join(__dirname, 'functions/updateInsertion.ts'),
+      handler: 'handler',
+      environment: {
+        'INSERTIONS_TABLE_NAME': insertionsTable.tableName
+      }
+    });
+
     insertionsTable.grantWriteData(createInsertionLambda);
     insertionsTable.grantReadData(getInsertionByIdLambda);
     insertionsTable.grantReadData(getInsertionsLambda);
+    insertionsTable.grantReadWriteData(updateInsertionLambda);
 
     createInsertionLambda.grantInvoke(new iam.ServicePrincipal('apigateway.amazonaws.com'));
     getInsertionByIdLambda.grantInvoke(new iam.ServicePrincipal('apigateway.amazonaws.com'));
     getInsertionsLambda.grantInvoke(new iam.ServicePrincipal('apigateway.amazonaws.com'));
+    updateInsertionLambda.grantInvoke(new iam.ServicePrincipal('apigateway.amazonaws.com'));
 
     const locationSchema: apigateway.JsonSchema = {
       schema: apigateway.JsonSchemaVersion.DRAFT4,
@@ -148,6 +159,10 @@ export class InsertionsStack extends cdk.NestedStack {
           type: apigateway.JsonSchemaType.STRING,
           description: 'the ID of the tutor who created the insertion'
         },
+        'status': {
+          type: apigateway.JsonSchemaType.STRING,
+          description: 'the status of the insertion (OPEN/CLOSED)'
+        },
         'createdAt': {
           type: apigateway.JsonSchemaType.STRING,
           description: 'the creation date of the insertion'
@@ -164,6 +179,43 @@ export class InsertionsStack extends cdk.NestedStack {
       contentType: 'application/json',
       description: 'Insertion model',
       modelName: 'Insertion'
+    });
+
+    const updateInsertionSchema: apigateway.JsonSchema = {
+      schema: apigateway.JsonSchemaVersion.DRAFT4,
+      type: apigateway.JsonSchemaType.OBJECT,
+      properties: {
+        'tutorId': {
+          type: apigateway.JsonSchemaType.STRING,
+          description: 'the ID of the tutor who created the insertion'
+        },
+        'subject': {
+          type: apigateway.JsonSchemaType.STRING,
+          description: 'the subject of the insertion'
+        },
+        'title': {
+          type: apigateway.JsonSchemaType.STRING,
+          description: 'the title of the insertion'
+        },
+        'description': {
+          type: apigateway.JsonSchemaType.STRING,
+          description: 'the description of the insertion'
+        },
+        'location': {
+          ref: `https://apigateway.amazonaws.com/restapis/${this.api.restApiId}/models/${locationModel.modelId}`
+        },
+        'status': {
+          type: apigateway.JsonSchemaType.STRING,
+          description: 'the status of the insertion (OPEN/CLOSED)'
+        }
+      },
+      required: [ 'tutorId' ]
+    };
+    const updateInsertionModel = this.api.addModel('UpdateInsertion', {
+      schema: updateInsertionSchema,
+      contentType: 'application/json',
+      description: 'Update Insertion model',
+      modelName: 'UpdateInsertion'
     });
 
     const insertionConnectionSchema: apigateway.JsonSchema = {
@@ -190,6 +242,7 @@ export class InsertionsStack extends cdk.NestedStack {
     });
 
     const insertions = this.api.root.addResource('insertions');
+    const insertionId = insertions.addResource('{insertionId}');
     // create insertion
     insertions.addMethod('POST', new apigateway.LambdaIntegration(createInsertionLambda), {
       operationName: 'CreateInsertion',
@@ -214,7 +267,7 @@ export class InsertionsStack extends cdk.NestedStack {
       ]
     });
     // get insertion by id
-    insertions.addResource('{insertionId}').addMethod('GET', new apigateway.LambdaIntegration(getInsertionByIdLambda), {
+    insertionId.addMethod('GET', new apigateway.LambdaIntegration(getInsertionByIdLambda), {
       operationName: 'GetInsertionById',
       methodResponses: [
         {
@@ -243,6 +296,38 @@ export class InsertionsStack extends cdk.NestedStack {
         {
           statusCode: '200',
           responseModels: { 'application/json': insertionConnectionModel }
+        },
+        {
+          statusCode: '500',
+          responseModels: { 'application/json': apigateway.Model.ERROR_MODEL }
+        }
+      ]
+    });
+
+    // update insertion
+    insertionId.addMethod('PUT', new apigateway.LambdaIntegration(updateInsertionLambda), {
+      operationName: 'UpdateInsertion',
+      requestModels: { 'application/json': updateInsertionModel },
+      requestValidator: new apigateway.RequestValidator(this, 'UpdateInsertionRequestValidator', {
+        restApi: this.api,
+        validateRequestBody: true
+      }),
+      methodResponses: [
+        {
+          statusCode: '200',
+          responseModels: { 'application/json': insertionModel }
+        },
+        {
+          statusCode: '400',
+          responseModels: { 'application/json': apigateway.Model.ERROR_MODEL }
+        },
+        {
+          statusCode: '403',
+          responseModels: { 'application/json': apigateway.Model.ERROR_MODEL }
+        },
+        {
+          statusCode: '404',
+          responseModels: { 'application/json': apigateway.Model.ERROR_MODEL }
         },
         {
           statusCode: '500',

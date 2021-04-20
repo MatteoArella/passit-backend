@@ -76,6 +76,10 @@ Back-end services are the following:
 
 Service | Description
 -------------------- | ------------------------------------------
+[Auth](./packages/auth/README.md) | Authentication service.
+[API](./packages/api/README.md) | API service.
 [Users](./packages/users/README.md) | Provides User search.
 [Insertions](./packages/insertions/README.md) | Provides CRUD operations on Insertions.
+[Search](./packages/search/README.md) | Search service.
 [Conversations](./packages/conversations/README.md) | Provides communication services between users.
+[Storage](./packages/storage/README.md) | Storage service.
